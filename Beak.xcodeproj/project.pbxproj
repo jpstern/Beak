@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		800BA1AE18CD4AEA0031E651 /* libEstimoteSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 800BA1AD18CD4AEA0031E651 /* libEstimoteSDK.a */; };
+		800BA1B018CD4B160031E651 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800BA1AF18CD4B160031E651 /* CoreLocation.framework */; };
+		800BA1B218CD4B1A0031E651 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800BA1B118CD4B1A0031E651 /* CoreBluetooth.framework */; };
+		800BA1B418CD4B220031E651 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800BA1B318CD4B220031E651 /* SystemConfiguration.framework */; };
 		808604AE18CD309F00ABA33B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808604AD18CD309F00ABA33B /* Foundation.framework */; };
 		808604B018CD309F00ABA33B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808604AF18CD309F00ABA33B /* CoreGraphics.framework */; };
 		808604B218CD309F00ABA33B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808604B118CD309F00ABA33B /* UIKit.framework */; };
@@ -21,6 +25,8 @@
 		808604CF18CD309F00ABA33B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808604B118CD309F00ABA33B /* UIKit.framework */; };
 		808604D718CD309F00ABA33B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 808604D518CD309F00ABA33B /* InfoPlist.strings */; };
 		808604D918CD309F00ABA33B /* BeakTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604D818CD309F00ABA33B /* BeakTests.m */; };
+		808604E418CD31A500ABA33B /* BeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604E318CD31A500ABA33B /* BeaconManager.m */; };
+		BFC108D02E704E8F88EF5B6A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C4AA03E3597450FB4B29218 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +40,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1BBDE11D3A254A82AC05ACCE /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		1C4AA03E3597450FB4B29218 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		800BA1A818CD4AEA0031E651 /* ESTBeacon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESTBeacon.h; sourceTree = "<group>"; };
+		800BA1A918CD4AEA0031E651 /* ESTBeaconDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESTBeaconDefinitions.h; sourceTree = "<group>"; };
+		800BA1AA18CD4AEA0031E651 /* ESTBeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESTBeaconManager.h; sourceTree = "<group>"; };
+		800BA1AB18CD4AEA0031E651 /* ESTBeaconRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESTBeaconRegion.h; sourceTree = "<group>"; };
+		800BA1AC18CD4AEA0031E651 /* ESTBeaconUpdateInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESTBeaconUpdateInfo.h; sourceTree = "<group>"; };
+		800BA1AD18CD4AEA0031E651 /* libEstimoteSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libEstimoteSDK.a; sourceTree = "<group>"; };
+		800BA1AF18CD4B160031E651 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		800BA1B118CD4B1A0031E651 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		800BA1B318CD4B220031E651 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		808604AA18CD309F00ABA33B /* Beak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		808604AD18CD309F00ABA33B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		808604AF18CD309F00ABA33B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -53,6 +70,8 @@
 		808604D418CD309F00ABA33B /* BeakTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BeakTests-Info.plist"; sourceTree = "<group>"; };
 		808604D618CD309F00ABA33B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		808604D818CD309F00ABA33B /* BeakTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeakTests.m; sourceTree = "<group>"; };
+		808604E218CD31A500ABA33B /* BeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconManager.h; sourceTree = "<group>"; };
+		808604E318CD31A500ABA33B /* BeaconManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,9 +79,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				800BA1B418CD4B220031E651 /* SystemConfiguration.framework in Frameworks */,
+				800BA1B218CD4B1A0031E651 /* CoreBluetooth.framework in Frameworks */,
+				800BA1B018CD4B160031E651 /* CoreLocation.framework in Frameworks */,
 				808604B018CD309F00ABA33B /* CoreGraphics.framework in Frameworks */,
 				808604B218CD309F00ABA33B /* UIKit.framework in Frameworks */,
 				808604AE18CD309F00ABA33B /* Foundation.framework in Frameworks */,
+				BFC108D02E704E8F88EF5B6A /* libPods.a in Frameworks */,
+				800BA1AE18CD4AEA0031E651 /* libEstimoteSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +103,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		800BA1A618CD4AEA0031E651 /* EstimoteSDK */ = {
+			isa = PBXGroup;
+			children = (
+				800BA1A718CD4AEA0031E651 /* Headers */,
+				800BA1AD18CD4AEA0031E651 /* libEstimoteSDK.a */,
+			);
+			name = EstimoteSDK;
+			path = ../EstimoteSDK;
+			sourceTree = "<group>";
+		};
+		800BA1A718CD4AEA0031E651 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				800BA1A818CD4AEA0031E651 /* ESTBeacon.h */,
+				800BA1A918CD4AEA0031E651 /* ESTBeaconDefinitions.h */,
+				800BA1AA18CD4AEA0031E651 /* ESTBeaconManager.h */,
+				800BA1AB18CD4AEA0031E651 /* ESTBeaconRegion.h */,
+				800BA1AC18CD4AEA0031E651 /* ESTBeaconUpdateInfo.h */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
 		808604A118CD309F00ABA33B = {
 			isa = PBXGroup;
 			children = (
@@ -86,6 +132,7 @@
 				808604D218CD309F00ABA33B /* BeakTests */,
 				808604AC18CD309F00ABA33B /* Frameworks */,
 				808604AB18CD309F00ABA33B /* Products */,
+				1BBDE11D3A254A82AC05ACCE /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,10 +148,14 @@
 		808604AC18CD309F00ABA33B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				800BA1B318CD4B220031E651 /* SystemConfiguration.framework */,
+				800BA1B118CD4B1A0031E651 /* CoreBluetooth.framework */,
+				800BA1AF18CD4B160031E651 /* CoreLocation.framework */,
 				808604AD18CD309F00ABA33B /* Foundation.framework */,
 				808604AF18CD309F00ABA33B /* CoreGraphics.framework */,
 				808604B118CD309F00ABA33B /* UIKit.framework */,
 				808604CC18CD309F00ABA33B /* XCTest.framework */,
+				1C4AA03E3597450FB4B29218 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -112,11 +163,14 @@
 		808604B318CD309F00ABA33B /* Beak */ = {
 			isa = PBXGroup;
 			children = (
+				800BA1A618CD4AEA0031E651 /* EstimoteSDK */,
 				808604BC18CD309F00ABA33B /* AppDelegate.h */,
 				808604BD18CD309F00ABA33B /* AppDelegate.m */,
 				808604BF18CD309F00ABA33B /* Main.storyboard */,
 				808604C218CD309F00ABA33B /* ViewController.h */,
 				808604C318CD309F00ABA33B /* ViewController.m */,
+				808604E218CD31A500ABA33B /* BeaconManager.h */,
+				808604E318CD31A500ABA33B /* BeaconManager.m */,
 				808604C518CD309F00ABA33B /* Images.xcassets */,
 				808604B418CD309F00ABA33B /* Supporting Files */,
 			);
@@ -159,9 +213,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 808604DC18CD309F00ABA33B /* Build configuration list for PBXNativeTarget "Beak" */;
 			buildPhases = (
+				0B587E5699E94478B570B0E4 /* Check Pods Manifest.lock */,
 				808604A618CD309F00ABA33B /* Sources */,
 				808604A718CD309F00ABA33B /* Frameworks */,
 				808604A818CD309F00ABA33B /* Resources */,
+				FC8A7AEEEA65474BAEDF2D18 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -244,12 +300,46 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0B587E5699E94478B570B0E4 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FC8A7AEEEA65474BAEDF2D18 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		808604A618CD309F00ABA33B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				808604C418CD309F00ABA33B /* ViewController.m in Sources */,
+				808604E418CD31A500ABA33B /* BeaconManager.m in Sources */,
 				808604BE18CD309F00ABA33B /* AppDelegate.m in Sources */,
 				808604BA18CD309F00ABA33B /* main.m in Sources */,
 			);
@@ -375,12 +465,24 @@
 		};
 		808604DD18CD309F00ABA33B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1BBDE11D3A254A82AC05ACCE /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beak/Beak-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers\"",
+					"\"${PODS_ROOT}/Headers/Facebook-iOS-SDK\"",
+					"\"${PODS_ROOT}/Headers/Facebook-iOS-SDK/FacebookSDK\"",
+					"\"${PODS_ROOT}/Headers/Parse-iOS-SDK\"",
+					"\"$(SRCROOT)/EstimoteSDK/Headers\"",
+				);
 				INFOPLIST_FILE = "Beak/Beak-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/JoshStern/Documents/iOS\\ Dev/Beak/EstimoteSDK",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -388,12 +490,24 @@
 		};
 		808604DE18CD309F00ABA33B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1BBDE11D3A254A82AC05ACCE /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beak/Beak-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers\"",
+					"\"${PODS_ROOT}/Headers/Facebook-iOS-SDK\"",
+					"\"${PODS_ROOT}/Headers/Facebook-iOS-SDK/FacebookSDK\"",
+					"\"${PODS_ROOT}/Headers/Parse-iOS-SDK\"",
+					"\"$(SRCROOT)/EstimoteSDK/Headers\"",
+				);
 				INFOPLIST_FILE = "Beak/Beak-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/JoshStern/Documents/iOS\\ Dev/Beak/EstimoteSDK",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -460,6 +574,7 @@
 				808604DE18CD309F00ABA33B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		808604DF18CD309F00ABA33B /* Build configuration list for PBXNativeTarget "BeakTests" */ = {
 			isa = XCConfigurationList;
@@ -468,6 +583,7 @@
 				808604E118CD309F00ABA33B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
