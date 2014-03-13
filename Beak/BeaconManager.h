@@ -9,13 +9,49 @@
 #import <Foundation/Foundation.h>
 #import <ESTBeaconManager.h>
 
+@protocol BeaconManagerDelegate <NSObject>
+
+/**
+ called on the delegate when message for entering a region is retrieved
+ 
+ access properties of message as following:
+ 
+ message[@"title"]
+ message[@"body"]
+ 
+ */
+
+- (void)didReceiveEnteredRegionMessage:(PFObject *)message;
+
+@end
 
 @interface BeaconManager : NSObject <ESTBeaconManagerDelegate>
 
 + (BeaconManager*)sharedManager;
 
+@property (nonatomic, weak) id <BeaconManagerDelegate> delegate;
+
 - (void)getAvailableGroupsWithBlock:(void(^)(NSArray *groups, NSError *error))block;
 - (void)monitorBeaconsForGroup:(NSString *)groupId;
+
+/**
+ 
+ method will return NSArray of ESTBeacon* to the block passed
+ 
+ */
+
+- (void)searchForNearbyBeacons:(void (^)(NSArray *beacons, NSError *error))block;
+
+/**
+ 
+ method to save a user generated group and associate it with beacons
+ 
+ groupAttributes - NSDictionary with key name
+ beacons - NSArray of ESTBeacon objects
+ 
+ */
+
+- (void)saveNewGroup:(NSDictionary*)groupAttributes withBeacons:(NSArray*)beacons;
 
 @property (nonatomic, strong) ESTBeaconManager *beaconManager;
 @property (nonatomic, strong) NSMutableDictionary *monitoredRegions;

@@ -8,6 +8,17 @@
 
 #import "BeaconManager.h"
 
+typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
+
+@interface BeaconManager () {
+    
+    NearbyBeaconsBlock nearbyBlock;
+}
+
+@property (nonatomic, strong) ESTBeaconRegion *currentRegion;
+
+@end
+
 @implementation BeaconManager
 
 + (BeaconManager *)sharedManager {
@@ -29,29 +40,9 @@
     
     if (self) {
         
-        /////////////////////////////////////////////////////////////
-        // setup Estimote beacon manager
-        
-        // craete manager instance
         self.beaconManager = [[ESTBeaconManager alloc] init];
         self.beaconManager.delegate = self;
         self.beaconManager.avoidUnknownStateBeacons = YES;
-        
-        // create sample region with major value defined
-
-//        ESTBeaconRegion* region = [[ESTBeaconRegion alloc] initWithProximityUUID:ESTIMOTE_PROXIMITY_UUID
-//                                                                           major:5648 minor:40385
-//                                                                      identifier: @"EstimoteSampleRegion"];
-        
-//        NSLog(@"TODO: Update the ESTBeaconRegion with your major / minor number and enable background app refresh in the Settings on your device for the NotificationDemo to work correctly.");
-        
-        // start looking for estimote beacons in region
-        // when beacon ranged beaconManager:didEnterRegion:
-        // and beaconManager:didExitRegion: invoked
-        
-//        [self.beaconManager startMonitoringForRegion:region];
-//        
-//        [self.beaconManager requestStateForRegion:region];
         
     }
     
@@ -111,19 +102,73 @@
     
 }
 
+- (void)searchForNearbyBeacons:(void (^)(NSArray *, NSError *))block {
+    
+    nearbyBlock = block;
+    
+    ESTBeaconRegion *region = [[ESTBeaconRegion alloc] initWithProximityUUID:ESTIMOTE_PROXIMITY_UUID identifier:@"ranging"];
+    
+    [self.beaconManager startMonitoringForRegion:region];
+}
+
+- (void)beaconManager:(ESTBeaconManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(ESTBeaconRegion *)region {
+    
+    nearbyBlock(beacons, nil);
+}
+
+- (void)beaconManager:(ESTBeaconManager *)manager rangingBeaconsDidFailForRegion:(ESTBeaconRegion *)region withError:(NSError *)error {
+    
+    nearbyBlock(nil, error);
+}
+
+- (void)saveNewGroup:(NSDictionary *)groupAttributes
+         withBeacons:(NSArray *)beacons {
+    
+    PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
+    [group setObject:groupAttributes[@"name"] forKey:@"name"];
+    [group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+       
+        if (succeeded) {
+            
+            for (ESTBeacon *beaconObj in beacons) {
+            
+                PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
+                [beacon setObject:beaconObj.major forKey:@"majorValue"];
+                [beacon setObject:beaconObj.minor forKey:@"minorValue"];
+                [beacon setObject:[beaconObj.proximityUUID UUIDString] forKey:@"proximityUUID"];
+                [beacon setObject:group.objectId forKey:@"groupId"];
+                [beacon saveInBackground];
+            }
+            
+        }
+        else {
+            
+            NSLog(@"%@", error);
+        }
+        
+    }];
+    
+}
+
+- (void)getInformationForEnteredRegion:(ESTBeaconRegion*)region {
+    
+    
+}
+
 #pragma mark ESTBeaconManager Delegate
 
 -(void)beaconManager:(ESTBeaconManager *)manager
    didDetermineState:(CLRegionState)state
            forRegion:(ESTBeaconRegion *)region
 {
-    if(state == CLRegionStateInside)
-    {
-
+    if(state == CLRegionStateInside) {
+        
+        _currentRegion = region;
+        
     }
-    else
-    {
-
+    else {
+        
+        _currentRegion = nil;
     }
 }
 
@@ -131,10 +176,45 @@
       didEnterRegion:(ESTBeaconRegion *)region
 {
     
-    // iPhone/iPad entered beacon zone
-//    [self setProductImage];
+    NSNumber *major = region.major;
+    NSNumber *minor = region.minor;
+    NSString *uuid = [region.proximityUUID UUIDString];
     
-    // present local notification
+    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"proximityUUID == %@ AND majorValue == %@ AND minorValue == %@", uuid, major, minor]];
+
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+       
+        if (objects && objects.count > 0 && !error) {
+        
+            PFObject *beacon = objects[0];
+            
+            PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"beaconId == %@", beacon.objectId]];
+            
+            [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+               
+                if (error) {
+                    
+                    NSLog(@"%@", error);
+                }
+                else if (objects && objects.count > 0) {
+                    
+                    PFObject *message = objects[0];
+                    
+                    [_delegate didReceiveEnteredRegionMessage:message];
+                }
+                
+            }];
+            
+        }
+        else if (error) {
+            
+            NSLog(@"%@", error);
+        }
+        
+        
+    }];
+    
+// present local notification
 //    UILocalNotification *notification = [[UILocalNotification alloc] init];
 //    notification.alertBody = @"Enter";
 //    notification.soundName = UILocalNotificationDefaultSoundName;
@@ -145,10 +225,8 @@
 -(void)beaconManager:(ESTBeaconManager *)manager
        didExitRegion:(ESTBeaconRegion *)region
 {
-    // iPhone/iPad left beacon zone
-//    [self setDiscountImage];
-    
-    // present local notification
+
+// present local notification
 //    UILocalNotification *notification = [[UILocalNotification alloc] init];
 //    notification.alertBody = @"The shoes you'd tried on are now 20%% off for you with this coupon";
 //    notification.soundName = UILocalNotificationDefaultSoundName;

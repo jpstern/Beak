@@ -11,6 +11,7 @@
 		800BA1B018CD4B160031E651 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800BA1AF18CD4B160031E651 /* CoreLocation.framework */; };
 		800BA1B218CD4B1A0031E651 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800BA1B118CD4B1A0031E651 /* CoreBluetooth.framework */; };
 		800BA1B418CD4B220031E651 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 800BA1B318CD4B220031E651 /* SystemConfiguration.framework */; };
+		800BA1E718CE98E00031E651 /* BeaconTableDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 800BA1E618CE98E00031E651 /* BeaconTableDelegate.m */; };
 		808604AE18CD309F00ABA33B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808604AD18CD309F00ABA33B /* Foundation.framework */; };
 		808604B018CD309F00ABA33B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808604AF18CD309F00ABA33B /* CoreGraphics.framework */; };
 		808604B218CD309F00ABA33B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808604B118CD309F00ABA33B /* UIKit.framework */; };
@@ -51,6 +52,8 @@
 		800BA1AF18CD4B160031E651 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		800BA1B118CD4B1A0031E651 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		800BA1B318CD4B220031E651 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		800BA1E518CE98E00031E651 /* BeaconTableDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconTableDelegate.h; sourceTree = "<group>"; };
+		800BA1E618CE98E00031E651 /* BeaconTableDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconTableDelegate.m; sourceTree = "<group>"; };
 		808604AA18CD309F00ABA33B /* Beak.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beak.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		808604AD18CD309F00ABA33B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		808604AF18CD309F00ABA33B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -171,6 +174,8 @@
 				808604C318CD309F00ABA33B /* ViewController.m */,
 				808604E218CD31A500ABA33B /* BeaconManager.h */,
 				808604E318CD31A500ABA33B /* BeaconManager.m */,
+				800BA1E518CE98E00031E651 /* BeaconTableDelegate.h */,
+				800BA1E618CE98E00031E651 /* BeaconTableDelegate.m */,
 				808604C518CD309F00ABA33B /* Images.xcassets */,
 				808604B418CD309F00ABA33B /* Supporting Files */,
 			);
@@ -341,6 +346,7 @@
 				808604C418CD309F00ABA33B /* ViewController.m in Sources */,
 				808604E418CD31A500ABA33B /* BeaconManager.m in Sources */,
 				808604BE18CD309F00ABA33B /* AppDelegate.m in Sources */,
+				800BA1E718CE98E00031E651 /* BeaconTableDelegate.m in Sources */,
 				808604BA18CD309F00ABA33B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

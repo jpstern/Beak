@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BeaconManager.h"
 
-@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface ViewController : UIViewController <BeaconManagerDelegate>
 
+@property (nonatomic, strong) IBOutlet UIView *loginView;
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
+
+- (void)switchToggled:(UISwitch*)toggle;
 
 @end

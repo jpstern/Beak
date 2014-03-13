@@ -7,33 +7,37 @@
 //
 
 #import "ViewController.h"
-
-#import "BeaconManager.h"
+#import "BeaconTableDelegate.h"
 
 @interface ViewController () <ESTBeaconManagerDelegate>
 
 @property (nonatomic, strong) BeaconManager *beaconManager;
-
-
-@property (nonatomic, strong) NSArray *groups;
-@property (nonatomic, strong) NSSet *activeGroups;
+@property (nonatomic, strong) BeaconTableDelegate *tableDelegate;
 
 @end
 
 @implementation ViewController
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-    _activeGroups = [def objectForKey:@"activeGroups"];
+//    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+//    _activeGroups = [def objectForKey:@"activeGroups"];
     
     [[BeaconManager sharedManager] getAvailableGroupsWithBlock:^(NSArray *groups, NSError *error) {
         
-        _groups = groups;
+        _tableDelegate.groups = groups;
         
         [_tableView reloadData];
     }];
+    
+    _tableDelegate = [[BeaconTableDelegate alloc] init];
+    _tableDelegate.selector = @selector(switchToggled:);
+    _tableDelegate.target = self;
+    _tableView.delegate = _tableDelegate;
+    _tableView.dataSource = _tableDelegate;
+
     
 }
 
@@ -41,6 +45,22 @@
     
     [super viewWillAppear:animated];
     
+//    [PFFacebookUtils logInWithPermissions:@[@"email"] block:^(PFUser *user, NSError *error) {
+//        
+//        if (!user) {
+//            
+//            NSLog(@"Uh oh. The user cancelled the Facebook login.");
+//            
+//        } else if (user.isNew) {
+//            
+//            NSLog(@"User signed up and logged in through Facebook!");
+//            
+//        } else {
+//            
+//            NSLog(@"User logged in through Facebook!");
+//        }
+//        
+//    }];
     
 }
 
@@ -51,56 +71,10 @@
 }
 
 - (void)switchToggled:(UISwitch*)toggle {
-    
-    PFObject *group = _groups[toggle.tag];
+
+    PFObject *group = _tableDelegate.groups[toggle.tag];
     
     [[BeaconManager sharedManager] monitorBeaconsForGroup:group.objectId];
 }
-
-#pragma mark UITableView
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    return _groups.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static NSString *cellID = @"CellID";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
-    
-    if (!cell) {
-        
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
-    }
-    
-    PFObject *group = _groups[indexPath.row];
-    
-    UISwitch *active = [[UISwitch alloc] init];
-    active.tag = indexPath.row;
-    [active addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
-    active.center = CGPointMake(270, 22);
-    [cell.contentView addSubview:active];
-    
-    if ([_activeGroups containsObject:group.objectId]) {
-        
-        active.on = YES;
-    }
-    else {
-        
-        active.on = NO;
-    }
-    
-    cell.textLabel.text = [group objectForKey:@"name"];
-    
-    return cell;
-}
-
 
 @end
