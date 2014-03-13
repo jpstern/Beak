@@ -130,14 +130,28 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
        
         if (succeeded) {
             
-            for (ESTBeacon *beaconObj in beacons) {
+            for (NSDictionary *beaconDict in beacons) {
             
+                ESTBeacon *beaconObj = beaconDict[@"beacon"];
+                
                 PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
                 [beacon setObject:beaconObj.major forKey:@"majorValue"];
                 [beacon setObject:beaconObj.minor forKey:@"minorValue"];
                 [beacon setObject:[beaconObj.proximityUUID UUIDString] forKey:@"proximityUUID"];
                 [beacon setObject:group.objectId forKey:@"groupId"];
-                [beacon saveInBackground];
+                [beacon saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                    for (NSDictionary *messageDict in beaconDict[@"messages"]) {
+                        
+                        PFObject *messageObj = [[PFObject alloc] initWithClassName:@"Group"];
+                        [messageObj setObject:beacon.objectId forKey:@"beaconId"];
+                        [messageObj setObject:messageDict[@"title"] forKey:@"title"];
+                        [messageObj setObject:messageDict[@"body"] forKey:@"body"];
+                        [messageObj saveInBackground];
+                        
+                    }
+                }];
+                
             }
             
         }

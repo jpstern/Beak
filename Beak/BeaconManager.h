@@ -46,8 +46,8 @@
  
  method to save a user generated group and associate it with beacons
  
- groupAttributes - NSDictionary with key name
- beacons - NSArray of ESTBeacon objects
+ groupAttributes - NSDictionary with keys: name
+ beacons - NSArray of NSDictionary's with keys: beacon(ESTBeacon object), messages(NSArray of NSDictionary with keys:title, body)
  
  */
 
