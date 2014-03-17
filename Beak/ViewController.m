@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "BeaconTableDelegate.h"
 
+
 @interface ViewController () <ESTBeaconManagerDelegate>
 
 @property (nonatomic, strong) BeaconManager *beaconManager;
@@ -38,7 +39,20 @@
     _tableView.delegate = _tableDelegate;
     _tableView.dataSource = _tableDelegate;
 
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0, 0, 320, 44);
+    [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [button setTitle:@"Create a Group" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(showCreateGroupController) forControlEvents:UIControlEventTouchUpInside];
+    [footerView addSubview:button];
     
+    _tableView.tableFooterView = footerView;
+}
+
+- (void)showCreateGroupController {
+    
+    [self performSegueWithIdentifier:@"createGroupSegue" sender:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
