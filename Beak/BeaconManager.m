@@ -121,8 +121,31 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     nearbyBlock(nil, error);
 }
 
+- (void)validateBeaconInput:(NSArray *)beacons {
+    
+    for (NSDictionary *dict in beacons) {
+        
+        NSAssert([dict isKindOfClass:[NSDictionary class]], @"argument 2 (beacons) must be an array of NSDictionaries, you passed %@", NSStringFromClass([dict class]));
+        NSAssert([dict[@"beacon"] isKindOfClass:[ESTBeacon class]], @"object at key ""beacon"" is not of type ESTBeacon");
+        NSAssert([dict[@"messages"] isKindOfClass:[NSArray class]], @"object at key ""messages"" is not of type NSArray");
+        
+        for (NSDictionary *message in dict[@"messages"]) {
+            
+            NSAssert(message[@"title"], @"message has no title");
+            NSAssert(message[@"body"], @"message has no body");
+        }
+        
+    }
+}
+
 - (void)saveNewGroup:(NSDictionary *)groupAttributes
          withBeacons:(NSArray *)beacons {
+    
+    NSAssert(groupAttributes != nil, @"argument 1 (groupAttributes) must be non-nil");
+    NSAssert(beacons != nil && beacons.count != 0, @"argument 2 (beacons) must be non-nil and contain at least 1 element");
+    NSAssert(groupAttributes[@"name"] != nil, @"argument 1 (groupAttributes) must contain a name key");
+    
+    [self validateBeaconInput:beacons];
     
     PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
     [group setObject:groupAttributes[@"name"] forKey:@"name"];

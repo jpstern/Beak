@@ -56,10 +56,10 @@
             </objects>
             <point key="canvasLocation" x="25" y="-591"/>
         </scene>
-        <!--View Controller - Beak-->
+        <!--Home View Controller - Beak-->
         <scene sceneID="6me-go-lWq">
             <objects>
-                <viewController id="OzT-Ar-r4u" customClass="ViewController" sceneMemberID="viewController">
+                <viewController id="OzT-Ar-r4u" customClass="HomeViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0eV-9v-M1u"/>
                         <viewControllerLayoutGuide type="bottom" id="q2t-i1-eIU"/>
