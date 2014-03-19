@@ -27,11 +27,8 @@
 		808604D718CD309F00ABA33B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 808604D518CD309F00ABA33B /* InfoPlist.strings */; };
 		808604D918CD309F00ABA33B /* BeakTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604D818CD309F00ABA33B /* BeakTests.m */; };
 		808604E418CD31A500ABA33B /* BeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604E318CD31A500ABA33B /* BeaconManager.m */; };
-<<<<<<< HEAD
 		B9E4B49018D8112C00845272 /* CreateGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */; };
-=======
 		80C3E94918D926D30096D787 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C3E94818D926D30096D787 /* SettingsViewController.m */; };
->>>>>>> dd33b1c4e66529b700ed70accab37ec515c049e1
 		BFC108D02E704E8F88EF5B6A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C4AA03E3597450FB4B29218 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -80,13 +77,10 @@
 		808604D818CD309F00ABA33B /* BeakTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeakTests.m; sourceTree = "<group>"; };
 		808604E218CD31A500ABA33B /* BeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconManager.h; sourceTree = "<group>"; };
 		808604E318CD31A500ABA33B /* BeaconManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconManager.m; sourceTree = "<group>"; };
-<<<<<<< HEAD
 		B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateGroupViewController.h; sourceTree = "<group>"; };
 		B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateGroupViewController.m; sourceTree = "<group>"; };
-=======
 		80C3E94718D926D30096D787 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		80C3E94818D926D30096D787 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
->>>>>>> dd33b1c4e66529b700ed70accab37ec515c049e1
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,13 +176,10 @@
 				808604BC18CD309F00ABA33B /* AppDelegate.h */,
 				808604BD18CD309F00ABA33B /* AppDelegate.m */,
 				808604BF18CD309F00ABA33B /* Main.storyboard */,
-<<<<<<< HEAD
 				B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */,
 				B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */,
-=======
 				80C3E94718D926D30096D787 /* SettingsViewController.h */,
 				80C3E94818D926D30096D787 /* SettingsViewController.m */,
->>>>>>> dd33b1c4e66529b700ed70accab37ec515c049e1
 				808604C218CD309F00ABA33B /* HomeViewController.h */,
 				808604C318CD309F00ABA33B /* HomeViewController.m */,
 				808604E218CD31A500ABA33B /* BeaconManager.h */,
