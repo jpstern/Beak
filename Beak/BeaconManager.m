@@ -189,46 +189,22 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
 
 - (void)getInformationForEnteredRegion:(ESTBeaconRegion*)region {
     
-    
-}
-
-#pragma mark ESTBeaconManager Delegate
-
--(void)beaconManager:(ESTBeaconManager *)manager
-   didDetermineState:(CLRegionState)state
-           forRegion:(ESTBeaconRegion *)region
-{
-    if(state == CLRegionStateInside) {
-        
-        _currentRegion = region;
-        
-    }
-    else {
-        
-        _currentRegion = nil;
-    }
-}
-
--(void)beaconManager:(ESTBeaconManager *)manager
-      didEnterRegion:(ESTBeaconRegion *)region
-{
-    
     NSNumber *major = region.major;
     NSNumber *minor = region.minor;
     NSString *uuid = [region.proximityUUID UUIDString];
     
     PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"proximityUUID == %@ AND majorValue == %@ AND minorValue == %@", uuid, major, minor]];
-
+    
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-       
-        if (objects && objects.count > 0 && !error) {
         
+        if (objects && objects.count > 0 && !error) {
+            
             PFObject *beacon = objects[0];
             
             PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"beaconId == %@", beacon.objectId]];
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-               
+                
                 if (error) {
                     
                     NSLog(@"%@", error);
@@ -250,6 +226,34 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
         
         
     }];
+    
+}
+
+#pragma mark ESTBeaconManager Delegate
+
+-(void)beaconManager:(ESTBeaconManager *)manager
+   didDetermineState:(CLRegionState)state
+           forRegion:(ESTBeaconRegion *)region
+{
+    if(state == CLRegionStateInside) {
+        
+        _currentRegion = region;
+        
+        [self getInformationForEnteredRegion:region];
+        
+        
+    }
+    else {
+        
+        _currentRegion = nil;
+    }
+}
+
+-(void)beaconManager:(ESTBeaconManager *)manager
+      didEnterRegion:(ESTBeaconRegion *)region
+{
+    
+    [self getInformationForEnteredRegion:region];
     
 // present local notification
 //    UILocalNotification *notification = [[UILocalNotification alloc] init];
