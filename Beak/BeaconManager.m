@@ -107,8 +107,8 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     nearbyBlock = block;
     
     ESTBeaconRegion *region = [[ESTBeaconRegion alloc] initWithProximityUUID:ESTIMOTE_PROXIMITY_UUID identifier:@"ranging"];
-    
-    [self.beaconManager startMonitoringForRegion:region];
+    [self.beaconManager startRangingBeaconsInRegion:region];
+//    [self.beaconManager startMonitoringForRegion:region];
 }
 
 - (void)beaconManager:(ESTBeaconManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(ESTBeaconRegion *)region {
