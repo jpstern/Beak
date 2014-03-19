@@ -91,4 +91,10 @@
     [[BeaconManager sharedManager] monitorBeaconsForGroup:group.objectId];
 }
 
+- (void)didReceiveEnteredRegionMessage:(PFObject *)message
+{
+    _textView.text = message[@"body"];
+    NSLog(_textView.text);
+}
+
 @end
