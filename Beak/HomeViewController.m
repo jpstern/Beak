@@ -63,6 +63,7 @@
 
 - (void)didReceiveEnteredRegionMessage:(PFObject *)message
 {
+    self.title = message[@"title"];
     _textView.text = message[@"body"];
     NSLog(@"%@", _textView.text);
 }
