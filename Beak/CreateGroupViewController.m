@@ -97,7 +97,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier=@"Cell";
+    
     UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
     
     ESTBeacon *beacon = beaconsList[indexPath.row];
     
