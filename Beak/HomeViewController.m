@@ -53,4 +53,19 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (void)switchToggled:(UISwitch*)toggle {
+
+    PFObject *group = _tableDelegate.groups[toggle.tag];
+    
+    [[BeaconManager sharedManager] monitorBeaconsForGroup:group.objectId];
+}
+
+- (void)didReceiveEnteredRegionMessage:(PFObject *)message
+{
+    self.title = message[@"title"];
+    _textView.text = message[@"body"];
+    NSLog(@"%@", _textView.text);
+}
+
 @end
