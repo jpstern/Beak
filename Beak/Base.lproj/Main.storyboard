@@ -12,7 +12,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="OzT-Ar-r4u" kind="relationship" relationship="rootViewController" id="O1a-jB-kJN"/>
+                        <segue destination="RhI-or-aS6" kind="relationship" relationship="rootViewController" id="Y5x-ky-mf8"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EYd-Qy-IZi" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -33,7 +33,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C5T-58-ZXl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-427" y="-591"/>
+            <point key="canvasLocation" x="767" y="-1075"/>
         </scene>
         <!--Create Group View Controller - Create Group-->
         <scene sceneID="bHZ-Og-OaC">
@@ -108,11 +108,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TzD-8W-cpt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="25" y="-591"/>
+            <point key="canvasLocation" x="1227" y="-1075"/>
         </scene>
-        <!--Home View Controller - Beak-->
-        <scene sceneID="6me-go-lWq">
+        <!--Settings View Controller - Root View Controller-->
+        <scene sceneID="6hy-bO-bCv">
             <objects>
+<<<<<<< HEAD
                 <viewController id="OzT-Ar-r4u" customClass="HomeViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0eV-9v-M1u"/>
@@ -135,14 +136,83 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Beak" id="Qd1-P1-pf7"/>
+=======
+                <tableViewController id="9Rd-8a-tAV" customClass="SettingsViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="POx-Oq-1pz">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="MhP-cw-vm9">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MhP-cw-vm9" id="655-PC-FeU">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="9Rd-8a-tAV" id="aub-wF-ggW"/>
+                            <outlet property="delegate" destination="9Rd-8a-tAV" id="AHV-sX-qp9"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="rAp-Lb-Jad">
+                        <barButtonItem key="leftBarButtonItem" title="Close" id="jqm-RG-95h">
+                            <connections>
+                                <action selector="dismissView:" destination="9Rd-8a-tAV" id="hsm-OL-1ib"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
-                        <outlet property="tableView" destination="dEG-Xq-ePl" id="ev8-eZ-wUx"/>
-                        <segue destination="ZCF-d8-tkM" kind="modal" identifier="createGroupSegue" id="xjd-KW-NOV"/>
+                        <segue destination="ZCF-d8-tkM" kind="modal" identifier="createGroupSegue" id="SQv-Pt-Fdi"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Cga-4w-2rO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1105" y="-364"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="lj5-dx-Zyv">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="rpi-zX-uIt" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="uCb-Er-voM">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="9Rd-8a-tAV" kind="relationship" relationship="rootViewController" id="u7o-d8-6K3"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WVv-du-P6h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="636" y="-364"/>
+        </scene>
+        <!--Home View Controller-->
+        <scene sceneID="MDg-9m-qLr">
+            <objects>
+                <viewController id="RhI-or-aS6" customClass="HomeViewController" sceneMemberID="viewController">
+                    <textView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="2Lz-4w-Y2Q">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
+                    <navigationItem key="navigationItem" id="cBJ-zd-Pv8">
+                        <barButtonItem key="rightBarButtonItem" systemItem="organize" id="Yzn-yx-dXd">
+                            <connections>
+                                <segue destination="rpi-zX-uIt" kind="modal" id="yrb-w5-kIV"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+>>>>>>> dd33b1c4e66529b700ed70accab37ec515c049e1
+                    <connections>
+                        <outlet property="textView" destination="2Lz-4w-Y2Q" id="O4P-gD-U94"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zRs-um-tM8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TkJ-Xd-OYN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="186" y="106"/>
+            <point key="canvasLocation" x="143" y="106"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
