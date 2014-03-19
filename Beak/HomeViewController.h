@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BeaconManager.h"
 
-@interface ViewController : UIViewController <BeaconManagerDelegate>
+@interface HomeViewController : UIViewController <BeaconManagerDelegate>
 
 @property (nonatomic, strong) IBOutlet UIView *loginView;
 @property (nonatomic, strong) IBOutlet UITableView *tableView;

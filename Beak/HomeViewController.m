@@ -6,18 +6,18 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "HomeViewController.h"
 #import "BeaconTableDelegate.h"
 
 
-@interface ViewController () <ESTBeaconManagerDelegate>
+@interface HomeViewController () <ESTBeaconManagerDelegate>
 
 @property (nonatomic, strong) BeaconManager *beaconManager;
 @property (nonatomic, strong) BeaconTableDelegate *tableDelegate;
 
 @end
 
-@implementation ViewController
+@implementation HomeViewController
 
 - (void)viewDidLoad
 {

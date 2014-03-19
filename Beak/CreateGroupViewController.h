@@ -6,9 +6,25 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
-#ifndef Beak_CreateGroupViewController_h
-#define Beak_CreateGroupViewController_h
+#import <UIKit/UIKit.h>
+#import "BeaconManager.h"
+
+@interface CreateGroupViewController : UIViewController <BeaconManagerDelegate>
+{
+    IBOutlet UITextField *groupNameInput;
+    IBOutlet UIBarButtonItem *saveButton;
+    IBOutlet UILabel *groupName;
+    NSMutableArray *beaconsList;
+}
+@property(strong,nonatomic) UITextField *groupNameInput;
+@property(strong,nonatomic) UIBarButtonItem *saveButton;
+@property (strong, nonatomic) IBOutlet UITableView *beaconTableView;
+
+- (IBAction)quitButtonClicked:(id)sender;
+- (IBAction)saveButtonClicked:(id)sender;
 
 
 
-#endif
+
+
+@end
