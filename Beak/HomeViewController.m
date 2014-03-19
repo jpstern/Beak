@@ -23,6 +23,8 @@
 {
     [super viewDidLoad];
     
+    [[BeaconManager sharedManager] setDelegate:self];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -113,13 +113,24 @@
         <scene sceneID="MDg-9m-qLr">
             <objects>
                 <viewController id="RhI-or-aS6" customClass="HomeViewController" sceneMemberID="viewController">
-                    <textView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="2Lz-4w-Y2Q">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hKE-W4-q4v"/>
+                        <viewControllerLayoutGuide type="bottom" id="r6Q-wl-HHV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="J7r-38-jHP">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                    </textView>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3hc-yo-CLY">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
                     <navigationItem key="navigationItem" id="cBJ-zd-Pv8">
                         <barButtonItem key="rightBarButtonItem" systemItem="organize" id="Yzn-yx-dXd">
                             <connections>
@@ -128,7 +139,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="textView" destination="2Lz-4w-Y2Q" id="O4P-gD-U94"/>
+                        <outlet property="textView" destination="3hc-yo-CLY" id="ZlY-gd-iK7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TkJ-Xd-OYN" userLabel="First Responder" sceneMemberID="firstResponder"/>
