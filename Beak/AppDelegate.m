@@ -13,8 +13,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     
-    [Parse setApplicationId:@"apAvmnJyzq59cX9MZ2oK7QxLf29A2aOA7UrQsO7Z"
-                  clientKey:@"NDSZV9ZoBTN6IKMsMGXPW2YL3CLA96Dq14ZEnCp7"];
+    [Parse setApplicationId:@"oOTSYejj88YoqDZWrlcKrlwC1ZQO7ym6qKeVsDuv"
+                  clientKey:@"zdb10O4DNTp9f4uI4TYL09wRONJra4J7AJ2FdbS8"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     [PFFacebookUtils initializeFacebook];
     
