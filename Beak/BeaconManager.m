@@ -189,6 +189,8 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
 
 - (void)getInformationForEnteredRegion:(ESTBeaconRegion*)region {
     
+    [_delegate didEnterRegion];
+    
     NSNumber *major = region.major;
     NSNumber *minor = region.minor;
     NSString *uuid = [region.proximityUUID UUIDString];

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BeaconManager.h"
 
-@interface CreateGroupViewController : UIViewController
+@interface CreateGroupViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 {
     IBOutlet UITextField *groupNameInput;
     IBOutlet UIBarButtonItem *saveButton;

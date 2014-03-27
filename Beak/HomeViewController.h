@@ -14,6 +14,7 @@
 @property (nonatomic, strong) IBOutlet UIView *loginView;
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) IBOutlet UITextView *textView;
+@property (nonatomic, strong) IBOutlet UIImageView *imageView;
 
 - (void)switchToggled:(UISwitch*)toggle;
 

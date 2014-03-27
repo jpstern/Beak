@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UITableViewController
+@interface ManageGroupsViewController : UITableViewController
 
 - (IBAction)dismissView:(id)sender;
 

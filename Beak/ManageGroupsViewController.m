@@ -6,16 +6,16 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
-#import "SettingsViewController.h"
+#import "ManageGroupsViewController.h"
 #import "BeaconManager.h"
 
-@interface SettingsViewController ()
+@interface ManageGroupsViewController ()
 
 @property (nonatomic, strong) NSArray *groups;
 
 @end
 
-@implementation SettingsViewController
+@implementation ManageGroupsViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -35,6 +35,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.title = @"Available Groups";
     
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];

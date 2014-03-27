@@ -23,6 +23,8 @@
 
 - (void)didReceiveEnteredRegionMessage:(PFObject *)message;
 
+- (void)didEnterRegion;
+
 @end
 
 @interface BeaconManager : NSObject <ESTBeaconManagerDelegate>

@@ -27,8 +27,9 @@
 		808604D718CD309F00ABA33B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 808604D518CD309F00ABA33B /* InfoPlist.strings */; };
 		808604D918CD309F00ABA33B /* BeakTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604D818CD309F00ABA33B /* BeakTests.m */; };
 		808604E418CD31A500ABA33B /* BeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604E318CD31A500ABA33B /* BeaconManager.m */; };
+		80C3E94918D926D30096D787 /* ManageGroupsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C3E94818D926D30096D787 /* ManageGroupsViewController.m */; };
+		80EA82D018DA20CA00981338 /* lion-03.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 80EA82CF18DA20CA00981338 /* lion-03.jpg */; };
 		B9E4B49018D8112C00845272 /* CreateGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */; };
-		80C3E94918D926D30096D787 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C3E94818D926D30096D787 /* SettingsViewController.m */; };
 		BFC108D02E704E8F88EF5B6A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C4AA03E3597450FB4B29218 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -77,10 +78,11 @@
 		808604D818CD309F00ABA33B /* BeakTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeakTests.m; sourceTree = "<group>"; };
 		808604E218CD31A500ABA33B /* BeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconManager.h; sourceTree = "<group>"; };
 		808604E318CD31A500ABA33B /* BeaconManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconManager.m; sourceTree = "<group>"; };
+		80C3E94718D926D30096D787 /* ManageGroupsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageGroupsViewController.h; sourceTree = "<group>"; };
+		80C3E94818D926D30096D787 /* ManageGroupsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageGroupsViewController.m; sourceTree = "<group>"; };
+		80EA82CF18DA20CA00981338 /* lion-03.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "lion-03.jpg"; sourceTree = "<group>"; };
 		B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateGroupViewController.h; sourceTree = "<group>"; };
 		B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateGroupViewController.m; sourceTree = "<group>"; };
-		80C3E94718D926D30096D787 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
-		80C3E94818D926D30096D787 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,14 +174,15 @@
 		808604B318CD309F00ABA33B /* Beak */ = {
 			isa = PBXGroup;
 			children = (
+				80EA82CF18DA20CA00981338 /* lion-03.jpg */,
 				800BA1A618CD4AEA0031E651 /* EstimoteSDK */,
 				808604BC18CD309F00ABA33B /* AppDelegate.h */,
 				808604BD18CD309F00ABA33B /* AppDelegate.m */,
 				808604BF18CD309F00ABA33B /* Main.storyboard */,
 				B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */,
 				B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */,
-				80C3E94718D926D30096D787 /* SettingsViewController.h */,
-				80C3E94818D926D30096D787 /* SettingsViewController.m */,
+				80C3E94718D926D30096D787 /* ManageGroupsViewController.h */,
+				80C3E94818D926D30096D787 /* ManageGroupsViewController.m */,
 				808604C218CD309F00ABA33B /* HomeViewController.h */,
 				808604C318CD309F00ABA33B /* HomeViewController.m */,
 				808604E218CD31A500ABA33B /* BeaconManager.h */,
@@ -299,6 +302,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80EA82D018DA20CA00981338 /* lion-03.jpg in Resources */,
 				808604C618CD309F00ABA33B /* Images.xcassets in Resources */,
 				808604B818CD309F00ABA33B /* InfoPlist.strings in Resources */,
 				808604C118CD309F00ABA33B /* Main.storyboard in Resources */,
@@ -356,7 +360,7 @@
 				808604C418CD309F00ABA33B /* HomeViewController.m in Sources */,
 				808604E418CD31A500ABA33B /* BeaconManager.m in Sources */,
 				808604BE18CD309F00ABA33B /* AppDelegate.m in Sources */,
-				80C3E94918D926D30096D787 /* SettingsViewController.m in Sources */,
+				80C3E94918D926D30096D787 /* ManageGroupsViewController.m in Sources */,
 				800BA1E718CE98E00031E651 /* BeaconTableDelegate.m in Sources */,
 				B9E4B49018D8112C00845272 /* CreateGroupViewController.m in Sources */,
 				808604BA18CD309F00ABA33B /* main.m in Sources */,
