@@ -29,6 +29,7 @@
 		808604E418CD31A500ABA33B /* BeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604E318CD31A500ABA33B /* BeaconManager.m */; };
 		80C3E94918D926D30096D787 /* ManageGroupsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C3E94818D926D30096D787 /* ManageGroupsViewController.m */; };
 		80EA82D018DA20CA00981338 /* lion-03.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 80EA82CF18DA20CA00981338 /* lion-03.jpg */; };
+		80EA82DC18E3B3EE00981338 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA82DB18E3B3EE00981338 /* ProfileViewController.m */; };
 		B9E4B49018D8112C00845272 /* CreateGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */; };
 		BFC108D02E704E8F88EF5B6A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C4AA03E3597450FB4B29218 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -81,6 +82,8 @@
 		80C3E94718D926D30096D787 /* ManageGroupsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageGroupsViewController.h; sourceTree = "<group>"; };
 		80C3E94818D926D30096D787 /* ManageGroupsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageGroupsViewController.m; sourceTree = "<group>"; };
 		80EA82CF18DA20CA00981338 /* lion-03.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "lion-03.jpg"; sourceTree = "<group>"; };
+		80EA82DA18E3B3EE00981338 /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
+		80EA82DB18E3B3EE00981338 /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateGroupViewController.h; sourceTree = "<group>"; };
 		B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateGroupViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -189,6 +192,8 @@
 				808604E318CD31A500ABA33B /* BeaconManager.m */,
 				800BA1E518CE98E00031E651 /* BeaconTableDelegate.h */,
 				800BA1E618CE98E00031E651 /* BeaconTableDelegate.m */,
+				80EA82DA18E3B3EE00981338 /* ProfileViewController.h */,
+				80EA82DB18E3B3EE00981338 /* ProfileViewController.m */,
 				808604C518CD309F00ABA33B /* Images.xcassets */,
 				808604B418CD309F00ABA33B /* Supporting Files */,
 			);
@@ -359,6 +364,7 @@
 			files = (
 				808604C418CD309F00ABA33B /* HomeViewController.m in Sources */,
 				808604E418CD31A500ABA33B /* BeaconManager.m in Sources */,
+				80EA82DC18E3B3EE00981338 /* ProfileViewController.m in Sources */,
 				808604BE18CD309F00ABA33B /* AppDelegate.m in Sources */,
 				80C3E94918D926D30096D787 /* ManageGroupsViewController.m in Sources */,
 				800BA1E718CE98E00031E651 /* BeaconTableDelegate.m in Sources */,

@@ -4,6 +4,40 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
+        <!--Profile View Controller-->
+        <scene sceneID="UN8-CU-VCb">
+            <objects>
+                <viewController id="Sum-sP-cUE" customClass="ProfileViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="aca-WH-bVJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="b8P-mn-YbV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="vyV-Lh-InX">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Sir-fW-RQg"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8wA-q3-6YT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-847" y="-500"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="RtE-sx-fL1">
+            <objects>
+                <navigationController storyboardIdentifier="profileNavigationController" definesPresentationContext="YES" id="H6j-7r-vs7" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="G1i-rm-xQc">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Sum-sP-cUE" kind="relationship" relationship="rootViewController" id="m1l-PW-Hm3"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DaP-j3-Ubf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1287" y="-500"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="QM0-cc-NwQ">
             <objects>
@@ -220,9 +254,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="cBJ-zd-Pv8">
-                        <barButtonItem key="rightBarButtonItem" systemItem="organize" id="Yzn-yx-dXd"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="cBJ-zd-Pv8"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TkJ-Xd-OYN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

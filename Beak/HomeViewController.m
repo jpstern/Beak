@@ -9,7 +9,6 @@
 #import "HomeViewController.h"
 #import "BeaconTableDelegate.h"
 
-
 @interface HomeViewController () <ESTBeaconManagerDelegate> {
     
     BOOL contentShown;
@@ -24,6 +23,32 @@
 
 @implementation HomeViewController
 
+- (void)showProfile {
+    
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+//    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"profileNavigationController"];
+//    [self presentViewController:controller animated:YES completion:nil];
+    
+    
+    [PFFacebookUtils logInWithPermissions:@[@"email"] block:^(PFUser *user, NSError *error) {
+
+        if (!user) {
+
+            NSLog(@"Uh oh. The user cancelled the Facebook login.");
+
+        } else if (user.isNew) {
+
+            NSLog(@"User signed up and logged in through Facebook!");
+
+        } else {
+
+            NSLog(@"User logged in through Facebook!");
+        }
+        
+    }];
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -32,28 +57,14 @@
     
     _imageView.hidden = YES;
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
-//    [PFFacebookUtils logInWithPermissions:@[@"email"] block:^(PFUser *user, NSError *error) {
-//        
-//        if (!user) {
-//            
-//            NSLog(@"Uh oh. The user cancelled the Facebook login.");
-//            
-//        } else if (user.isNew) {
-//            
-//            NSLog(@"User signed up and logged in through Facebook!");
-//            
-//        } else {
-//            
-//            NSLog(@"User logged in through Facebook!");
-//        }
-//        
-//    }];
+
     
 }
 
