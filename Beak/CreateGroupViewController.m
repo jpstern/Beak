@@ -15,8 +15,8 @@
 
 @implementation CreateGroupViewController
 
-@synthesize groupNameInput;
-@synthesize saveButton;
+//@synthesize groupNameInput;
+//@synthesize saveButton;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -33,12 +33,22 @@
     [super viewDidLoad];
     
     
-    beaconsList=[[NSMutableArray alloc]init];
+    UITextField *enterGroupName =[[UITextField alloc] initWithFrame:CGRectMake(20, 80, 280, 40)];
+    enterGroupName.borderStyle=UITextBorderStyleRoundedRect;
+    enterGroupName.placeholder=@"Enter group name here";
+    [self.view addSubview:enterGroupName];
+    
+    UITableView *beaconTable=[[UITableView alloc] initWithFrame:CGRectMake(20, 170, 280, 280)];
+
+    [self.view addSubview:beaconTable];
+    
+    
+    self.beaconsList=[[NSMutableArray alloc]init];
     [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
        
-        beaconsList = beacons;
+        self.beaconsList = beacons;
         
-        [self.beaconTableView reloadData];
+        [self.beaconTable reloadData];
         
     }];
     
@@ -64,15 +74,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)quitButtonClicked:(id)sender {
+/*- (IBAction)quitButtonClicked:(id)sender {
     NSLog(@"quitclicked");
     [self dismissViewControllerAnimated:YES completion:nil];
-}
+}*/
 
-- (IBAction)saveButtonClicked:(id)sender {
+/*- (IBAction)saveButtonClicked:(id)sender {
     
-    if(groupNameInput.text.length>0)
-    {
+    //if(groupNameInput.text.length>0)
+    //{
      
         //[[BeaconManager sharedManager]saveNewGroup:<#(NSDictionary *)#> withBeacons:<#(NSArray *)#>
         // {
@@ -80,9 +90,9 @@
              
         // }];
         //groupName.text=groupNameInput.text;
-    }
+    //}
     
-}
+}*/
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -91,7 +101,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [beaconsList count];
+    return [self.beaconsList count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -101,7 +111,7 @@
     UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     
-    ESTBeacon *beacon = beaconsList[indexPath.row];
+    ESTBeacon *beacon = self.beaconsList[indexPath.row];
     
     cell.textLabel.text = beacon.proximityUUID.UUIDString;
     
