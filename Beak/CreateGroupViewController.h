@@ -21,7 +21,7 @@
 //@property (strong, nonatomic) IBOutlet UITableView *beaconTableView;
 
 //- (IBAction)quitButtonClicked:(id)sender;
-//- (IBAction)saveButtonClicked:(id)sender;
+//- (IBAction)goToSave:(id)sender;
 
 @property(strong,nonatomic) NSMutableArray *beaconsList;
 @property(strong,nonatomic) UITableView *beaconTable;

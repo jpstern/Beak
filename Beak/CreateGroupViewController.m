@@ -39,9 +39,10 @@
     [self.view addSubview:enterGroupName];
     
     UITableView *beaconTable=[[UITableView alloc] initWithFrame:CGRectMake(20, 170, 280, 280)];
-
     [self.view addSubview:beaconTable];
     
+    UIBarButtonItem *saveButton=[[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(goToSave)];
+    [self.navigationItem setRightBarButtonItem:saveButton];
     
     self.beaconsList=[[NSMutableArray alloc]init];
     [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
@@ -79,8 +80,9 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }*/
 
-/*- (IBAction)saveButtonClicked:(id)sender {
+- (void)goToSave{
     
+    NSLog(@"goToSave!");
     //if(groupNameInput.text.length>0)
     //{
      
@@ -92,7 +94,7 @@
         //groupName.text=groupNameInput.text;
     //}
     
-}*/
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
