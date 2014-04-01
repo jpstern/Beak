@@ -32,13 +32,16 @@
 {
     [super viewDidLoad];
     
+    UILabel *beaconTableText=[[UILabel alloc]initWithFrame:CGRectMake(20, 160, 280, 20)];
+    beaconTableText.text=@"Beacons Available:";
+    [self.view addSubview:beaconTableText];
     
-    UITextField *enterGroupName =[[UITextField alloc] initWithFrame:CGRectMake(20, 80, 280, 40)];
-    enterGroupName.borderStyle=UITextBorderStyleRoundedRect;
-    enterGroupName.placeholder=@"Enter group name here";
-    [self.view addSubview:enterGroupName];
+    self.enterGroupName =[[UITextField alloc] initWithFrame:CGRectMake(20, 80, 280, 40)];
+    self.enterGroupName.borderStyle=UITextBorderStyleRoundedRect;
+    self.enterGroupName.placeholder=@"Enter group name here";
+    [self.view addSubview:self.enterGroupName];
     
-    UITableView *beaconTable=[[UITableView alloc] initWithFrame:CGRectMake(20, 170, 280, 280)];
+    UITableView *beaconTable=[[UITableView alloc] initWithFrame:CGRectMake(20, 180, 280, 280)];
     [self.view addSubview:beaconTable];
     
     UIBarButtonItem *saveButton=[[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(goToSave)];
@@ -83,6 +86,7 @@
 - (void)goToSave{
     
     NSLog(@"goToSave!");
+    //self.enterGroupName
     //if(groupNameInput.text.length>0)
     //{
      
@@ -95,6 +99,7 @@
     //}
     
 }
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -112,10 +117,21 @@
     
     UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
+    if (!cell) {
+        
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
     
     ESTBeacon *beacon = self.beaconsList[indexPath.row];
     
     cell.textLabel.text = beacon.proximityUUID.UUIDString;
+    NSNumber *major=beacon.major;
+    NSNumber *minor=beacon.minor;
+    NSString *temp=[NSString stringWithFormat:@"Major:%@ Minor:%@",major,minor];
+    cell.detailTextLabel.text=temp;
+    NSLog(beacon.proximityUUID.UUIDString);
+    
     
     return cell;
 }
