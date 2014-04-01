@@ -20,8 +20,8 @@
 @property(strong,nonatomic) UIBarButtonItem *saveButton;
 @property (strong, nonatomic) IBOutlet UITableView *beaconTableView;
 
-- (IBAction)quitButtonClicked:(id)sender;
-- (IBAction)saveButtonClicked:(id)sender;
+//- (IBAction)quitButtonClicked:(id)sender;
+//- (IBAction)saveButtonClicked:(id)sender;
 
 
 
