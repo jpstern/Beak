@@ -147,7 +147,10 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     
     [self validateBeaconInput:beacons];
     
+    
+    
     PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
+    [group setObject:[PFUser currentUser] forKey:@"user"];
     [group setObject:groupAttributes[@"name"] forKey:@"name"];
     [group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
        

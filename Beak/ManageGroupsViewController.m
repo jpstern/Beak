@@ -38,15 +38,7 @@
     
     self.title = @"Available Groups";
     
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(0, 0, 320, 44);
-    [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [button setTitle:@"Create a Group" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(showCreateGroupController) forControlEvents:UIControlEventTouchUpInside];
-    [footerView addSubview:button];
     
-    self.tableView.tableFooterView = footerView;
     
     [[BeaconManager sharedManager] getAvailableGroupsWithBlock:^(NSArray *groups, NSError *error) {
         
@@ -60,11 +52,6 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)showCreateGroupController {
-    
-    [self performSegueWithIdentifier:@"createGroupSegue" sender:self];
 }
 
 - (void)switchToggled:(UISwitch*)toggle {
