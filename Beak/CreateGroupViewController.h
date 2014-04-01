@@ -22,7 +22,6 @@
 
 //- (IBAction)quitButtonClicked:(id)sender;
 //- (IBAction)goToSave:(id)sender;
-
 @property(strong,nonatomic) UITextField *enterGroupName;
 @property(strong,nonatomic) NSArray *beaconsList;
 @property(strong,nonatomic) UITableView *beaconTable;

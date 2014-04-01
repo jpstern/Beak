@@ -50,13 +50,17 @@
     self.beaconsList=[[NSMutableArray alloc]init];
     [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
        
+        NSLog(@"searching1..%d",beacons.count);
         self.beaconsList = beacons;
-        
         [self.beaconTable reloadData];
         
     }];
     
-    //[beaconsList addObject:@"beacon 1"];
+    NSLog(@"searching..%d",self.beaconsList.count);
+
+
+    
+    //[self.beaconsList addObject:@"beacon 1",@"beacon2"];
     
     
     
@@ -86,15 +90,22 @@
 - (void)goToSave{
     
     NSLog(@"goToSave!");
+    if(self.enterGroupName.text.length==0)
+    {
+        NSLog(@"Please enter a valid group name");
+    }
+    
+    NSLog(self.enterGroupName.text);
+    
     //self.enterGroupName
     //if(groupNameInput.text.length>0)
     //{
      
-        //[[BeaconManager sharedManager]saveNewGroup:<#(NSDictionary *)#> withBeacons:<#(NSArray *)#>
-        // {
+     //   [[[BeaconManager sharedManager]saveNewGroup:<#(NSDictionary *)#> withBeacons:<#(NSArray *)#>]
+     //    {
              
-             
-        // }];
+            //
+     //    }];
         //groupName.text=groupNameInput.text;
     //}
     
@@ -130,7 +141,7 @@
     NSNumber *minor=beacon.minor;
     NSString *temp=[NSString stringWithFormat:@"Major:%@ Minor:%@",major,minor];
     cell.detailTextLabel.text=temp;
-    NSLog(beacon.proximityUUID.UUIDString);
+    NSLog(temp);
     
     
     return cell;
