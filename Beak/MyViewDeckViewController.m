@@ -1,18 +1,18 @@
 //
-//  ProfileViewController.m
+//  MyViewDeckViewController.m
 //  Beak
 //
-//  Created by Josh Stern on 3/26/14.
+//  Created by Josh Stern on 4/1/14.
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
-#import "ProfileViewController.h"
+#import "MyViewDeckViewController.h"
 
-@interface ProfileViewController ()
+@interface MyViewDeckViewController ()
 
 @end
 
-@implementation ProfileViewController
+@implementation MyViewDeckViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -21,6 +21,23 @@
         // Custom initialization
     }
     return self;
+}
+
+- (void)awakeFromNib {
+    
+    [super awakeFromNib];
+    
+    [self setNavigationControllerBehavior:IIViewDeckNavigationControllerIntegrated];
+    
+    [self setCenterController:[self.storyboard
+                               instantiateViewControllerWithIdentifier:@"centerPanel"]];
+    
+    [self setRightController:[self.storyboard
+                              instantiateViewControllerWithIdentifier:@"rightPanel"]];
+    
+    
+    [self setRightSize:180];
+    
 }
 
 - (void)viewDidLoad

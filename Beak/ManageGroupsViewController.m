@@ -9,9 +9,12 @@
 #import "ManageGroupsViewController.h"
 #import "BeaconManager.h"
 
+#import "ManageCell.h"
+
 @interface ManageGroupsViewController ()
 
-@property (nonatomic, strong) NSArray *groups;
+@property (nonatomic, strong) NSArray *nearby;
+@property (nonatomic, strong) NSArray *subscriptions;
 
 @end
 
@@ -36,16 +39,85 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = @"Available Groups";
+    self.title = @"Manage Groups";
     
+//    [[BeaconManager sharedManager] getAvailableGroupsWithBlock:^(NSArray *groups, NSError *error) {
+//        
+//        _groups = groups;
+//        
+//        [self.tableView reloadData];
+//    }];
+}
+
+- (void)reloadSubscriptions {
     
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)reloadNearby {
     
-    [[BeaconManager sharedManager] getAvailableGroupsWithBlock:^(NSArray *groups, NSError *error) {
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)filterNearby {
+    
+    NSArray *array = [[_subscriptions valueForKey:@"group"] valueForKey:@"objectId"];
+    
+//    NSMutableArray *temp2 = [_nearby mutableCopy];
+//    [temp2 removeObjectsInArray:array];
+//    _nearby = temp2;
+    
+//    _nearby = [_nearby filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"NOT (SELF.objectId IN %@)", array]];
+    
+    [self reloadNearby];
+    [self reloadSubscriptions];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+//    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
+//       
+//        NSArray *beaconIds = [beacons valueForKey:@"proximityUUID"];
+    
+    NSArray *beaconIds = @[@"1234", @"4321"];
+    
+    [[BeaconManager sharedManager] getGroupsForNearbyBeacons:beaconIds WithCompletion:^(NSArray *beacons) {
         
-        _groups = groups;
+        _nearby = beacons;
         
-        [self.tableView reloadData];
+        [self reloadNearby];
+        
+        [[BeaconManager sharedManager] getUserSubscribedGroups:^(NSArray *groups, NSError *error) {
+            
+            _subscriptions = groups;
+            
+            [self reloadSubscriptions];
+            
+//            [self filterNearby];
+        }];
+        
     }];
+    
+//    }];
+    
+//    [[BeaconManager sharedManager] getAvailableGroupsWithBlock:^(NSArray *groups2, NSError *error) {
+//        
+//        _nearby = groups2;
+//        
+//        [self reloadNearby];
+//        
+////        if (_subscriptions) {
+////            
+////            [self filterNearby];
+////        }
+//        
+//    }];
+
+    
+
+//    [[BeaconManager sharedManager] saveDummyObject];
 }
 
 - (void)didReceiveMemoryWarning
@@ -54,58 +126,186 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)switchToggled:(UISwitch*)toggle {
+- (void)monitorGroup:(ManageCell *)cell {
     
-    PFObject *group = _groups[toggle.tag];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    cell.accessoryType = UITableViewCellAccessoryCheckmark;
     
-    [[BeaconManager sharedManager] monitorBeaconsForGroup:group.objectId];
+    PFObject *group = _nearby[indexPath.row];
+    
+    [[BeaconManager sharedManager] subscribeToGroup:group WithCompletion:^(PFObject *subscription) {
+       
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
+        [[_subscriptions mutableCopy] addObject:group];
+        
+        NSMutableArray *temp = [_subscriptions mutableCopy];
+        [temp addObject:subscription];
+        _subscriptions = temp;
+        
+        NSMutableArray *temp2 = [_nearby mutableCopy];
+        [temp2 removeObjectAtIndex:indexPath.row];
+        _nearby = temp2;
+        
+        [self.tableView beginUpdates];
+        
+        if (_subscriptions.count == 0) {
+            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:_subscriptions.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        else {
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        
+        if (_nearby.count == 0) {
+        
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        else {
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        
+        [self.tableView endUpdates];
+    }];
+    
+    
 }
 
 #pragma mark UITableView stuff
 
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return @"Unsubscribe";
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    if (section == 0) {
+        
+        return @"YOUR GROUPS";
+    }
+    
+    return @"ADD A NEARBY GROUP";
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return _groups.count;
+    if (section == 0) {
+        
+        return _subscriptions.count;// ? _subscriptions.count : _subscriptions ? 1 : 0;
+    }
+    
+    return _nearby.count;// ? _nearby.count : _nearby ? 1 : 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *cellID = @"CellID";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    ManageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
     
     if (!cell) {
         
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        cell = [[ManageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+    
     }
     
-    PFObject *group = _groups[indexPath.row];
-    
-    UISwitch *active = [[UISwitch alloc] init];
-    active.tag = indexPath.row;
-    [active addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
-    active.center = CGPointMake(270, 22);
-    [cell.contentView addSubview:active];
-    
-    //    if ([_activeGroups containsObject:group.objectId]) {
-    //
-    //        active.on = YES;
-    //    }
-    //    else {
-    //
-    //        active.on = NO;
-    //    }
-    
-    cell.textLabel.text = [group objectForKey:@"name"];
+    if (indexPath.section == 0) {
+        
+        if (_subscriptions.count == 0) {
+            
+            cell.noGroups = YES;
+            cell.emptyLabel.text = @"No subscriptions";
+        }
+        else {
+            
+            cell.noGroups = NO;
+            
+            PFObject *subscription = _subscriptions[indexPath.row];
+            
+            if ([subscription.parseClassName isEqualToString:@"Subscription"]) {
+                
+                PFObject *group = [subscription objectForKey:@"group"];
+                [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    
+                    cell.groupName.text = [object objectForKey:@"name"];
+                    
+                }];
+                
+            }
+            else if ([subscription.parseClassName isEqualToString:@"Group"]) {
+                
+                cell.groupName.text = [subscription objectForKey:@"name"];
+            }
+        }
+    }
+    else {
+        
+        if (_nearby.count == 0) {
+            
+            cell.noGroups = YES;
+            cell.emptyLabel.text = @"No subscriptions";
+        }
+        else {
+            
+            PFObject *group = _nearby[indexPath.row];
+            
+            [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                cell.groupName.text = [group objectForKey:@"name"];
+            }];
+            
+            
+        }
+        
+    }
     
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 1) {
+        
+        ManageCell *cell = (ManageCell*)[tableView cellForRowAtIndexPath:indexPath];
+        
+        [self monitorGroup:cell];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    PFObject *subscription = _subscriptions[indexPath.row];
+    
+    [subscription deleteInBackground];
+    
+    NSMutableArray *temp = [_subscriptions mutableCopy];
+    [temp removeObjectAtIndex:indexPath.row];
+    _subscriptions = temp;
+    
+    if (_subscriptions.count == 0) {
+        
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else {
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0) {
+        
+        return YES;
+    }
+    
+    return NO;
+}
 
 /*
 #pragma mark - Navigation

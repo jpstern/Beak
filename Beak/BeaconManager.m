@@ -49,10 +49,97 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     return self;
 }
 
+- (void)saveDummyObject {
+    
+    PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
+    [group setObject:[PFUser currentUser] forKey:@"owner"];
+    [group setObject:@"this is the name" forKey:@"name"];
+    [group setObject:@[@"1234"] forKey:@"beaconIDs"];
+    [group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        [self saveDummyBeaconForGroup:group];
+    }];
+}
+
+- (void)saveDummyBeaconForGroup:(PFObject*)group {
+    
+    PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
+    [beacon setObject:group forKey:@"group"];
+    [beacon setObject:@"1234" forKey:@"beaconId"];
+    [beacon saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+    }];
+    
+    PFObject *beacon2 = [[PFObject alloc] initWithClassName:@"Beacon"];
+    [beacon2 setObject:group forKey:@"group"];
+    [beacon2 setObject:@"4321" forKey:@"beaconId"];
+    [beacon2 saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+    }];
+}
+
+- (void)subscribeToGroup:(PFObject *)groupObj WithCompletion:(void (^)(PFObject *))block {
+    
+    PFObject *subscription = [[PFObject alloc] initWithClassName:@"Subscription"];
+    [subscription setObject:[PFUser currentUser] forKey:@"user"];
+    [subscription setObject:groupObj forKey:@"group"];
+    
+    [subscription saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+       
+        block (subscription);
+    }];
+}
+
+- (void)getUserSubscribedGroups:(void (^)(NSArray *, NSError *))block {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Subscription" predicate:[NSPredicate predicateWithFormat:@"user == %@", [PFUser currentUser]]];
+    
+    [query findObjectsInBackgroundWithBlock:block];
+    
+}
+
+- (void)getGroupsForNearbyBeacons:(NSArray *)beaconIds WithCompletion:(void (^)(NSArray *))block {
+    
+    
+    NSMutableSet *groupSet = [[NSMutableSet alloc] init];
+    NSMutableSet *groupIDSet = [[NSMutableSet alloc] init];
+    
+    __block NSInteger returnCount = 0;
+    for (NSString *beaconID in beaconIds) {
+        
+        PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"beaconId == %@", beaconID]];
+        
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+
+            PFObject *group = objects[0][@"group"];
+            
+            if (![groupIDSet containsObject:group.objectId]) {
+                
+                [groupIDSet addObject:group.objectId];
+                [groupSet addObject:group];
+            }
+            
+            [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                
+                
+            }];
+            
+            returnCount ++;
+            
+            if (returnCount == beaconIds.count) {
+                
+                block([groupSet allObjects]);
+            }
+        }];
+        
+    }
+    
+}
+
 - (void)getAvailableGroupsWithBlock:(void (^)(NSArray *, NSError *))block {
     
     PFQuery *query = [PFQuery queryWithClassName:@"Group"];
-    
+
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
         if (!error) {
@@ -108,7 +195,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     
     ESTBeaconRegion *region = [[ESTBeaconRegion alloc] initWithProximityUUID:ESTIMOTE_PROXIMITY_UUID identifier:@"ranging"];
     [self.beaconManager startRangingBeaconsInRegion:region];
-//    [self.beaconManager startMonitoringForRegion:region];
+
 }
 
 - (void)beaconManager:(ESTBeaconManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(ESTBeaconRegion *)region {
@@ -150,7 +237,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     
     
     PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
-    [group setObject:[PFUser currentUser] forKey:@"user"];
+    [group setObject:[PFUser currentUser] forKey:@"owner"];
     [group setObject:groupAttributes[@"name"] forKey:@"name"];
     [group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
        
