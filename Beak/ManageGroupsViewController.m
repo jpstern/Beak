@@ -59,48 +59,63 @@
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)filterNearby {
+- (void)viewWillDisappear:(BOOL)animated {
     
-    NSArray *array = [[_subscriptions valueForKey:@"group"] valueForKey:@"objectId"];
+    [super viewWillDisappear:animated];
     
-//    NSMutableArray *temp2 = [_nearby mutableCopy];
-//    [temp2 removeObjectsInArray:array];
-//    _nearby = temp2;
+    [[BeaconManager sharedManager] stopSearchingForBeacons];
     
-//    _nearby = [_nearby filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"NOT (SELF.objectId IN %@)", array]];
-    
-    [self reloadNearby];
-    [self reloadSubscriptions];
+    self.viewDeckController.panningMode = IIViewDeckFullViewPanning;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
     
-//    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
-//       
-//        NSArray *beaconIds = [beacons valueForKey:@"proximityUUID"];
+    self.viewDeckController.panningMode = IIViewDeckNoPanning;
     
-    NSArray *beaconIds = @[@"1234", @"4321"];
-    
-    [[BeaconManager sharedManager] getGroupsForNearbyBeacons:beaconIds WithCompletion:^(NSArray *beacons) {
+    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
         
-        _nearby = beacons;
+        NSArray *beaconIds = [beacons valueForKeyPath:@"proximityUUID.UUIDString"];
         
-        [self reloadNearby];
-        
-        [[BeaconManager sharedManager] getUserSubscribedGroups:^(NSArray *groups, NSError *error) {
+        [[BeaconManager sharedManager] getGroupsForNearbyBeacons:beaconIds WithCompletion:^(NSArray *beacons) {
             
-            _subscriptions = groups;
+            NSSet *set = [NSSet setWithArray:[_nearby valueForKey:@"objectId"]];
+            NSSet *set1 = [NSSet setWithArray:[beacons valueForKey:@"objectId"]];
             
-            [self reloadSubscriptions];
+            if (![set isEqualToSet:set1]) {
+                
+                _nearby = beacons;
+//                [self reloadNearby];
+            }
             
-//            [self filterNearby];
+            [[BeaconManager sharedManager] getUserSubscribedGroups:^(NSArray *groups, NSError *error) {
+                
+
+                NSSet *set2 = [NSSet setWithArray:[_subscriptions valueForKey:@"objectId"]];
+                NSSet *set3 = [NSSet setWithArray:[groups valueForKey:@"objectId"]];
+                
+                if (!_subscriptions || ![set2 isEqualToSet:set3]) {
+                    
+                    _subscriptions = groups;
+                    
+                    
+//                    [self reloadSubscriptions];
+                    
+                    NSArray *subscriptionIds = [_subscriptions valueForKeyPath:@"group.objectId"];
+                    
+                    _nearby = [_nearby filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"NOT (SELF.objectId IN %@)", subscriptionIds]];
+                    
+                    [self.tableView reloadData];
+
+                    
+                }
+                
+            }];
+            
         }];
         
     }];
-    
-//    }];
     
 //    [[BeaconManager sharedManager] getAvailableGroupsWithBlock:^(NSArray *groups2, NSError *error) {
 //        
@@ -177,6 +192,41 @@
     return @"Unsubscribe";
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
+    if (section == 0) {
+        
+        label.text = @"YOUR GROUPS";
+    }
+    else {
+        
+        label.text = @"ADD A NEARBY GROUP";
+    }
+    label.textColor = [UIColor colorWithRed:0.427451 green:0.427451 blue:0.447059 alpha:1];
+    label.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+    [view addSubview:label];
+    
+    if (section == 1) {
+        
+        CGSize size = [label.text sizeWithAttributes:@{NSFontAttributeName: label.font}];
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        indicator.center = CGPointMake(label.frame.origin.x + size.width + 20, label.center.y);
+        [indicator startAnimating];
+        [view addSubview:indicator];
+
+    }
+    
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    return 44;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
     if (section == 0) {
@@ -196,10 +246,10 @@
     
     if (section == 0) {
         
-        return _subscriptions.count;// ? _subscriptions.count : _subscriptions ? 1 : 0;
+        return _subscriptions.count;
     }
     
-    return _nearby.count;// ? _nearby.count : _nearby ? 1 : 0;
+    return _nearby.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -288,13 +338,15 @@
     [temp removeObjectAtIndex:indexPath.row];
     _subscriptions = temp;
     
-    if (_subscriptions.count == 0) {
-        
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-    else {
-        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
+//    if (_subscriptions.count == 0) {
+//        
+//        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+//    }
+//    else {
+//        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//    }
+    
+    [tableView reloadData];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {

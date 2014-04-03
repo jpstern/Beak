@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import <ViewDeck/IIViewDeckController.h>
-
 @interface RightMenuViewController : UITableViewController
 //<UITableViewDataSource, UITableViewDelegate>
 

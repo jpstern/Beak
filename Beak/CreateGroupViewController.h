@@ -24,7 +24,7 @@
 //- (IBAction)goToSave:(id)sender;
 @property(strong,nonatomic) UITextField *enterGroupName;
 @property(strong,nonatomic) NSArray *beaconsList;
-@property(strong,nonatomic) UITableView *beaconTable;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
 
 
 @end

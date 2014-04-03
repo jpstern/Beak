@@ -54,7 +54,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
     [group setObject:[PFUser currentUser] forKey:@"owner"];
     [group setObject:@"this is the name" forKey:@"name"];
-    [group setObject:@[@"1234"] forKey:@"beaconIDs"];
+    [group setObject:@[@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"] forKey:@"beaconIDs"];
     [group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         [self saveDummyBeaconForGroup:group];
@@ -65,17 +65,17 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     
     PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
     [beacon setObject:group forKey:@"group"];
-    [beacon setObject:@"1234" forKey:@"beaconId"];
+    [beacon setObject:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D" forKey:@"beaconId"];
     [beacon saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
     }];
     
-    PFObject *beacon2 = [[PFObject alloc] initWithClassName:@"Beacon"];
-    [beacon2 setObject:group forKey:@"group"];
-    [beacon2 setObject:@"4321" forKey:@"beaconId"];
-    [beacon2 saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
-    }];
+//    PFObject *beacon2 = [[PFObject alloc] initWithClassName:@"Beacon"];
+//    [beacon2 setObject:group forKey:@"group"];
+//    [beacon2 setObject:@"4321" forKey:@"beaconId"];
+//    [beacon2 saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//        
+//    }];
 }
 
 - (void)subscribeToGroup:(PFObject *)groupObj WithCompletion:(void (^)(PFObject *))block {
@@ -187,6 +187,12 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
         
     }];
     
+}
+
+- (void)stopSearchingForBeacons {
+    
+    ESTBeaconRegion *region = [[ESTBeaconRegion alloc] initWithProximityUUID:ESTIMOTE_PROXIMITY_UUID identifier:@"ranging"];
+    [self.beaconManager stopRangingBeaconsInRegion:region];
 }
 
 - (void)searchForNearbyBeacons:(void (^)(NSArray *, NSError *))block {

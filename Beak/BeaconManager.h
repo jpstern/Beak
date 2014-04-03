@@ -50,6 +50,7 @@
  */
 
 - (void)searchForNearbyBeacons:(void (^)(NSArray *beacons, NSError *error))block;
+- (void)stopSearchingForBeacons;
 
 /**
  

@@ -28,35 +28,36 @@
     return self;
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [[BeaconManager sharedManager] stopSearchingForBeacons];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    UILabel *beaconTableText=[[UILabel alloc]initWithFrame:CGRectMake(20, 160, 280, 20)];
-    beaconTableText.text=@"Beacons Available:";
-    [self.view addSubview:beaconTableText];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"CellID"];
     
-    self.enterGroupName =[[UITextField alloc] initWithFrame:CGRectMake(20, 80, 280, 40)];
-    self.enterGroupName.borderStyle=UITextBorderStyleRoundedRect;
-    self.enterGroupName.placeholder=@"Enter group name here";
-    [self.view addSubview:self.enterGroupName];
+//    UILabel *beaconTableText=[[UILabel alloc]initWithFrame:CGRectMake(20, 160, 280, 20)];
+//    beaconTableText.text=@"Beacons Available:";
+//    [self.view addSubview:beaconTableText];
     
-    UITableView *beaconTable=[[UITableView alloc] initWithFrame:CGRectMake(20, 180, 280, 280)];
-    [self.view addSubview:beaconTable];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+    headerView.backgroundColor = [UIColor whiteColor];
+    _enterGroupName = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, 300, 40)];
+//    _enterGroupName.borderStyle = UITextBorderStyleLine;
+    _enterGroupName.placeholder = @"Enter group name here";
+    [headerView addSubview:self.enterGroupName];
+    
+    _tableView.tableHeaderView = headerView;
     
     UIBarButtonItem *saveButton=[[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(goToSave)];
     [self.navigationItem setRightBarButtonItem:saveButton];
     
-    self.beaconsList=[[NSMutableArray alloc]init];
-    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
-       
-        NSLog(@"searching1..%d",beacons.count);
-        self.beaconsList = beacons;
-        [self.beaconTable reloadData];
-        
-    }];
-    
-    NSLog(@"searching..%d",self.beaconsList.count);
+//    NSLog(@"searching..%d",self.beaconsList.count);
 
 
     
@@ -74,6 +75,19 @@
         saveButton.enabled=NO;
     }*/
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+ 
+    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
+        
+        _beaconsList = beacons;
+        [_tableView reloadData];
+        
+    }];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -95,8 +109,6 @@
         NSLog(@"Please enter a valid group name");
     }
     
-    NSLog(self.enterGroupName.text);
-    
     //self.enterGroupName
     //if(groupNameInput.text.length>0)
     //{
@@ -111,6 +123,37 @@
     
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
+    if (section == 0) {
+        
+        label.text = @"NEARBY BEACONS";
+    }
+
+    label.textColor = [UIColor colorWithRed:0.427451 green:0.427451 blue:0.447059 alpha:1];
+    label.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+    [view addSubview:label];
+    
+    if (section == 0) {
+        
+        CGSize size = [label.text sizeWithAttributes:@{NSFontAttributeName: label.font}];
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        indicator.center = CGPointMake(label.frame.origin.x + size.width + 20, label.center.y);
+        [indicator startAnimating];
+        [view addSubview:indicator];
+        
+    }
+    
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    return 44;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -119,20 +162,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.beaconsList count];
+    return _beaconsList.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier=@"Cell";
+    static NSString *CellIdentifier = @"CellID";
     
-    UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    if (!cell) {
-        
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
-    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     ESTBeacon *beacon = self.beaconsList[indexPath.row];
     
@@ -141,7 +178,6 @@
     NSNumber *minor=beacon.minor;
     NSString *temp=[NSString stringWithFormat:@"Major:%@ Minor:%@",major,minor];
     cell.detailTextLabel.text=temp;
-    NSLog(temp);
     
     
     return cell;
