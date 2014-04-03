@@ -65,9 +65,14 @@
  
     [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
         
-        _beaconsList = beacons;
-        [_tableView reloadData];
+        NSSet *set = [NSSet setWithArray:[_beaconsList valueForKey:@"proximityUUID"]];
+        NSSet *set1 = [NSSet setWithArray:[beacons valueForKey:@"proximityUUID"]];
         
+        if (![set isEqual:set1]) {
+            
+            _beaconsList = beacons;
+            [_tableView reloadData];
+        }
     }];
 
 }

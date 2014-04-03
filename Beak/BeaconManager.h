@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <ESTBeaconManager.h>
+#import "ESTBeaconManager.h"
 
 @protocol BeaconManagerDelegate <NSObject>
 
