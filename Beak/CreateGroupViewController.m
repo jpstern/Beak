@@ -50,30 +50,24 @@
     self.beaconsList=[[NSMutableArray alloc]init];
     [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
        
-        NSLog(@"searching1..%d",beacons.count);
+        NSLog(@"searching..%d",beacons.count);
         self.beaconsList = beacons;
         [self.beaconTable reloadData];
         
     }];
     
-    NSLog(@"searching..%d",self.beaconsList.count);
+    UIBarButtonItem *infoButton = [[UIBarButtonItem alloc]
+                                   initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                   target:self action:@selector(goToSave)];
+    //[self.view addSubview:infoButton];
+    
+    //NSLog(@"searching..%d",self.beaconsList.count);
 
 
     
     //[self.beaconsList addObject:@"beacon 1",@"beacon2"];
     
-    
-    
-    
-    /*if(groupNameInput.text.length>0)
-    {
-        saveButton.enabled=YES;
-    }
-    else
-    {
-        saveButton.enabled=NO;
-    }*/
-    // Do any additional setup after loading the view.
+        // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning
@@ -92,7 +86,9 @@
     NSLog(@"goToSave!");
     if(self.enterGroupName.text.length==0)
     {
-        NSLog(@"Please enter a valid group name");
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please enter a valid group name" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        //[alert release];
     }
     
     NSLog(self.enterGroupName.text);
@@ -128,6 +124,9 @@
     
     UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
+    UISwitch *mySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(130, 235, 0, 0)];
+    [mySwitch addTarget:self action:@selector(changeSwitch:) forControlEvents:UIControlEventValueChanged];
+    cell.accessoryView=mySwitch;
     if (!cell) {
         
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
@@ -145,5 +144,16 @@
     
     
     return cell;
+}
+
+
+- (void)changeSwitch:(id)sender{
+    if([sender isOn]){
+        // Execute any code when the switch is ON
+        NSLog(@"Switch is ON");
+    } else{
+        // Execute any code when the switch is OFF
+        NSLog(@"Switch is OFF");
+    }
 }
 @end
