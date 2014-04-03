@@ -57,24 +57,6 @@
     UIBarButtonItem *saveButton=[[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(goToSave)];
     [self.navigationItem setRightBarButtonItem:saveButton];
     
-//    NSLog(@"searching..%d",self.beaconsList.count);
-
-
-    
-    //[self.beaconsList addObject:@"beacon 1",@"beacon2"];
-    
-    
-    
-    
-    /*if(groupNameInput.text.length>0)
-    {
-        saveButton.enabled=YES;
-    }
-    else
-    {
-        saveButton.enabled=NO;
-    }*/
-    // Do any additional setup after loading the view.
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -106,7 +88,9 @@
     NSLog(@"goToSave!");
     if(self.enterGroupName.text.length==0)
     {
-        NSLog(@"Please enter a valid group name");
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please enter a valid group name" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        //[alert release];
     }
     
     //self.enterGroupName
@@ -167,9 +151,14 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+
     static NSString *CellIdentifier = @"CellID";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+    UISwitch *mySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(130, 235, 0, 0)];
+    [mySwitch addTarget:self action:@selector(changeSwitch:) forControlEvents:UIControlEventValueChanged];
+    cell.accessoryView=mySwitch;
     
     ESTBeacon *beacon = self.beaconsList[indexPath.row];
     
@@ -181,5 +170,16 @@
     
     
     return cell;
+}
+
+
+- (void)changeSwitch:(id)sender{
+    if([sender isOn]){
+        // Execute any code when the switch is ON
+        NSLog(@"Switch is ON");
+    } else{
+        // Execute any code when the switch is OFF
+        NSLog(@"Switch is OFF");
+    }
 }
 @end
