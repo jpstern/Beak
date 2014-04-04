@@ -54,6 +54,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
     [group setObject:[PFUser currentUser] forKey:@"owner"];
     [group setObject:@"this is the name" forKey:@"name"];
+    [group setObject:@(1) forKey:@"beaconCount"];
     [group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         [self saveDummyBeaconForGroup:group];
@@ -134,6 +135,14 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
         
     }
     
+}
+
+- (void)getBeaconsForGroup:(PFObject *)group andCompletion:(void (^)(NSArray *, NSError *))block {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Beacon"];
+    [query whereKey:@"group" equalTo:group];
+    
+    [query findObjectsInBackgroundWithBlock:block];
 }
 
 - (void)getAvailableGroupsWithBlock:(void (^)(NSArray *, NSError *))block {

@@ -34,6 +34,8 @@
 		80EA835118EB536D00981338 /* RightMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA835018EB536D00981338 /* RightMenuViewController.m */; };
 		80EA835418EB571100981338 /* MenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA835318EB571100981338 /* MenuTableViewCell.m */; };
 		80EA838018EE151800981338 /* libEstimoteSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA837F18EE151800981338 /* libEstimoteSDK.a */; };
+		80EA838618EE371900981338 /* EditGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA838518EE371900981338 /* EditGroupViewController.m */; };
+		80EA838918EE3A7A00981338 /* EditGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA838818EE3A7A00981338 /* EditGroupCell.m */; };
 		B9E4B49018D8112C00845272 /* CreateGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */; };
 		BFC108D02E704E8F88EF5B6A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C4AA03E3597450FB4B29218 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -97,6 +99,10 @@
 		80EA837D18EE151800981338 /* ESTBeaconRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESTBeaconRegion.h; sourceTree = "<group>"; };
 		80EA837E18EE151800981338 /* ESTBeaconUpdateInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESTBeaconUpdateInfo.h; sourceTree = "<group>"; };
 		80EA837F18EE151800981338 /* libEstimoteSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libEstimoteSDK.a; sourceTree = "<group>"; };
+		80EA838418EE371900981338 /* EditGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditGroupViewController.h; sourceTree = "<group>"; };
+		80EA838518EE371900981338 /* EditGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditGroupViewController.m; sourceTree = "<group>"; };
+		80EA838718EE3A7A00981338 /* EditGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditGroupCell.h; sourceTree = "<group>"; };
+		80EA838818EE3A7A00981338 /* EditGroupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditGroupCell.m; sourceTree = "<group>"; };
 		B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateGroupViewController.h; sourceTree = "<group>"; };
 		B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateGroupViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -177,6 +183,10 @@
 				B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */,
 				80C3E94718D926D30096D787 /* ManageGroupsViewController.h */,
 				80C3E94818D926D30096D787 /* ManageGroupsViewController.m */,
+				80EA838418EE371900981338 /* EditGroupViewController.h */,
+				80EA838518EE371900981338 /* EditGroupViewController.m */,
+				80EA838718EE3A7A00981338 /* EditGroupCell.h */,
+				80EA838818EE3A7A00981338 /* EditGroupCell.m */,
 				80EA833918EA593000981338 /* ManageCell.h */,
 				80EA833A18EA593000981338 /* ManageCell.m */,
 				808604C218CD309F00ABA33B /* HomeViewController.h */,
@@ -398,6 +408,8 @@
 				808604BA18CD309F00ABA33B /* main.m in Sources */,
 				80EA835418EB571100981338 /* MenuTableViewCell.m in Sources */,
 				80EA833B18EA593000981338 /* ManageCell.m in Sources */,
+				80EA838618EE371900981338 /* EditGroupViewController.m in Sources */,
+				80EA838918EE3A7A00981338 /* EditGroupCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

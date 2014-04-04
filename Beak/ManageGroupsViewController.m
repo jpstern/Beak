@@ -7,6 +7,8 @@
 //
 
 #import "ManageGroupsViewController.h"
+
+#import "EditGroupViewController.h"
 #import "BeaconManager.h"
 
 #import "ManageCell.h"
@@ -305,7 +307,7 @@
     
     if (!cell) {
         
-        cell = [[ManageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        cell = [[ManageCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
     
     }
     
@@ -322,20 +324,36 @@
             
             PFObject *subscription = _subscriptions[indexPath.row];
             
-            if ([subscription.parseClassName isEqualToString:@"Subscription"]) {
+            [subscription fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+               
+                PFObject *user = subscription[@"user"];
+                
+                [user fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    
+                    if ([user.objectId isEqualToString:[[PFUser currentUser] objectId]]) {
+                        
+                        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                    }
+                }];
+                
+                //            if ([subscription.parseClassName isEqualToString:@"Subscription"]) {
                 
                 PFObject *group = [subscription objectForKey:@"group"];
                 [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                     
-                    cell.groupName.text = [object objectForKey:@"name"];
+                    cell.textLabel.text = [object objectForKey:@"name"];
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ beacon%@", group[@"beaconCount"], [group[@"beaconCount"] intValue] == 1 ? @"" : @"s"];
                     
                 }];
                 
-            }
-            else if ([subscription.parseClassName isEqualToString:@"Group"]) {
+                //            }
+                //            else if ([subscription.parseClassName isEqualToString:@"Group"]) {
+                //
+                //                cell.groupName.text = [subscription objectForKey:@"name"];
+                //            }
                 
-                cell.groupName.text = [subscription objectForKey:@"name"];
-            }
+            }];
+            
         }
     }
     else {
@@ -350,15 +368,49 @@
             PFObject *group = _nearby[indexPath.row];
             
             [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                cell.groupName.text = [group objectForKey:@"name"];
+                
+                PFObject *owner = group[@"owner"];
+                
+                [owner fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    
+                    if ([owner.objectId isEqualToString:[[PFUser currentUser] objectId]]) {
+                        
+                        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                    }
+                }];
+                
+                [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    cell.textLabel.text = [group objectForKey:@"name"];
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ beacon%@", group[@"beaconCount"], [group[@"beaconCount"] intValue] == 1 ? @"" : @"s"];
+                }];
+                
             }];
-            
             
         }
         
     }
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    
+    PFObject *group = nil;
+    
+    if (indexPath.section == 0) {
+        
+        group = _subscriptions[indexPath.row][@"group"];
+        
+    }
+    else if (indexPath.section == 1) {
+        
+        group = _nearby[indexPath.row];
+        
+    }
+    
+    EditGroupViewController *editGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"editGroupViewController"];
+    editGroup.group = group;
+    [self.navigationController pushViewController:editGroup animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

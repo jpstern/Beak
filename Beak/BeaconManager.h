@@ -43,6 +43,7 @@
 - (void)getAvailableGroupsWithBlock:(void(^)(NSArray *groups, NSError *error))block;
 - (void)monitorBeaconsForGroup:(NSString *)groupId;
 
+- (void)getBeaconsForGroup:(PFObject*)group andCompletion:(void (^)(NSArray *beacons, NSError *error))block;
 
 - (void)searchForNearbyGroups:(void (^)(NSArray *parseBeacons, NSError *error))block;
 /**
