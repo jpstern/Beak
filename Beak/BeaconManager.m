@@ -8,7 +8,7 @@
 
 #import "BeaconManager.h"
 
-typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
+typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, NSError *error);
 
 @interface BeaconManager () {
     
@@ -54,7 +54,6 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
     [group setObject:[PFUser currentUser] forKey:@"owner"];
     [group setObject:@"this is the name" forKey:@"name"];
-    [group setObject:@[@"B9407F30-F5F8-466E-AFF9-25556B57FE6D"] forKey:@"beaconIDs"];
     [group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         [self saveDummyBeaconForGroup:group];
@@ -65,7 +64,8 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
     
     PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
     [beacon setObject:group forKey:@"group"];
-    [beacon setObject:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D" forKey:@"beaconId"];
+    [beacon setObject:@"B9407F30-F5F8-466E-AFF9-25556B57FE6D" forKey:@"proximityUUID"];
+    [beacon setObject:@(5648) forKey:@"major"];
     [beacon saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
     }];
@@ -196,7 +196,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
 //    [self.beaconManager stopEstimoteBeaconDiscovery];
 }
 
-- (void)searchForNearbyBeacons:(void (^)(NSArray *, NSError *))block {
+- (void)searchForNearbyBeacons:(void (^)(NSArray *estBeacons, NSArray *parseBeacons, NSError *))block {
     
     nearbyBlock = block;
     
@@ -206,14 +206,34 @@ typedef void (^NearbyBeaconsBlock)(NSArray *, NSError *);
 
 }
 
-- (void)beaconManager:(ESTBeaconManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(ESTBeaconRegion *)region {
+- (void)searchForNearbyGroups:(void (^)(NSArray *, NSError *))block {
     
-    nearbyBlock(beacons, nil);
+    [self searchForNearbyBeacons:^(NSArray *estBeacons, NSArray *parseBeacons, NSError *error) {
+       
+        block(parseBeacons, error);
+    }];
+}
+
+- (void)beaconManager:(ESTBeaconManager *)manager
+      didRangeBeacons:(NSArray *)beacons inRegion:(ESTBeaconRegion *)region {
+    
+    NSArray *estBeacons = beacons;
+    
+    NSArray *majorValues = [beacons valueForKey:@"major"];
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Beacon"];
+    [query whereKey:@"major" containedIn:majorValues];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+    
+        nearbyBlock(estBeacons, objects, nil);
+    }];
+    
+    
 }
 
 - (void)beaconManager:(ESTBeaconManager *)manager rangingBeaconsDidFailForRegion:(ESTBeaconRegion *)region withError:(NSError *)error {
     
-    nearbyBlock(nil, error);
+    nearbyBlock(nil, nil, error);
 }
 
 - (void)validateBeaconInput:(NSArray *)beacons {

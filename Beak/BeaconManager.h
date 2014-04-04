@@ -43,13 +43,15 @@
 - (void)getAvailableGroupsWithBlock:(void(^)(NSArray *groups, NSError *error))block;
 - (void)monitorBeaconsForGroup:(NSString *)groupId;
 
+
+- (void)searchForNearbyGroups:(void (^)(NSArray *parseBeacons, NSError *error))block;
 /**
  
- method will return NSArray of ESTBeacon* to the block passed
+ method will return NSArray of ESTBeacon* and NSArray of PFObjects (Beacon) to the block passed
  
  */
-
-- (void)searchForNearbyBeacons:(void (^)(NSArray *beacons, NSError *error))block;
+- (void)searchForNearbyBeacons:(void (^)(NSArray *estBeacons, NSArray *parseBeacons, NSError *error))block;
+//- (void)searchForNearbyBeacons:(void (^)(NSArray *beacons, NSError *error))block;
 - (void)stopSearchingForBeacons;
 
 /**

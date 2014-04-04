@@ -74,7 +74,10 @@
     
     self.viewDeckController.panningMode = IIViewDeckNoPanning;
     
-    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
+    [self findNearbyGroups];
+    [self findSubscriptionGroups];
+    
+    /*[[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
         
         NSArray *beaconIds = [beacons valueForKeyPath:@"proximityUUID.UUIDString"];
         
@@ -115,7 +118,7 @@
             
         }];
         
-    }];
+    }];*/
     
 //    [[BeaconManager sharedManager] getAvailableGroupsWithBlock:^(NSArray *groups2, NSError *error) {
 //        
@@ -141,6 +144,46 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)findSubscriptionGroups {
+    
+    [[BeaconManager sharedManager] getUserSubscribedGroups:^(NSArray *groups, NSError *error) {
+       
+        _subscriptions = groups;
+        
+        [self.tableView reloadData];
+    }];
+}
+
+- (void)findNearbyGroups {
+    
+    [[BeaconManager sharedManager] searchForNearbyGroups:^(NSArray *parseBeacons, NSError *error) {
+        
+        NSSet *subscriptionIds = [[NSSet alloc] initWithArray:[_subscriptions valueForKeyPath:@"group.objectId"]];
+        NSMutableSet *objectIds = [[NSMutableSet alloc] init];
+        NSMutableSet *groups = [[NSMutableSet alloc] init];
+        
+        for (PFObject *obj in parseBeacons) {
+            
+            if (![objectIds containsObject:[obj[@"group"] objectId]] && ![subscriptionIds containsObject:[obj[@"group"] objectId]]) {
+                
+                [objectIds addObject:[obj[@"group"] objectId]];
+                [groups addObject:obj[@"group"]];
+            }
+        }
+        
+        NSSet *newIds = [NSSet setWithArray:[[groups allObjects] valueForKey:@"objectId"]];
+        NSSet *oldIds = [NSSet setWithArray:[_nearby valueForKey:@"objectId"]];
+        
+        if (![newIds isEqualToSet:oldIds]) {
+            
+            _nearby = [groups allObjects];
+            
+            [self reloadNearby];
+        }
+        
+    }];
+}
+
 - (void)monitorGroup:(ManageCell *)cell {
     
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
@@ -152,7 +195,7 @@
        
         cell.accessoryType = UITableViewCellAccessoryNone;
         
-        [[_subscriptions mutableCopy] addObject:group];
+//        [[_subscriptions mutableCopy] addObject:group];
         
         NSMutableArray *temp = [_subscriptions mutableCopy];
         [temp addObject:subscription];
@@ -162,24 +205,26 @@
         [temp2 removeObjectAtIndex:indexPath.row];
         _nearby = temp2;
         
-        [self.tableView beginUpdates];
+        [self.tableView reloadData];
         
-        if (_subscriptions.count == 0) {
-            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:_subscriptions.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-        else {
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-        
-        if (_nearby.count == 0) {
-        
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-        else {
-            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-        
-        [self.tableView endUpdates];
+//        [self.tableView beginUpdates];
+//        
+//        if (_subscriptions.count == 0) {
+//            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:_subscriptions.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+//        }
+//        else {
+//            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+//        }
+//        
+//        if (_nearby.count == 0) {
+//        
+//            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+//        }
+//        else {
+//            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//        }
+//        
+//        [self.tableView endUpdates];
     }];
     
     
