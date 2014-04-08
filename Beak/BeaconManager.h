@@ -69,4 +69,9 @@
 @property (nonatomic, strong) ESTBeaconManager *beaconManager;
 @property (nonatomic, strong) NSMutableDictionary *monitoredRegions;
 
+//for create session
+
+@property (nonatomic, strong) NSArray *estBeacons;
+@property (nonatomic, strong) NSMutableDictionary *currentMessages; //estbeacon -> nsarray of messages
+
 @end

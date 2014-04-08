@@ -10,4 +10,9 @@
 
 @interface EditGroupCell : UITableViewCell
 
+@property (nonatomic, strong) UITextField *beaconName;
+@property (nonatomic, strong) UILabel *subtitle;
+@property (nonatomic, strong) UIButton *message;
+@property (nonatomic, strong) UILabel *count;
+
 @end

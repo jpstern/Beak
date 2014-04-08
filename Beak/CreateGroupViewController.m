@@ -8,9 +8,11 @@
 
 #import "CreateGroupViewController.h"
 
+#import "EditGroupViewController.h"
+
 @interface CreateGroupViewController ()
 
-
+@property (nonatomic, strong) NSMutableSet *selectedBeacons;
 @end
 
 @implementation CreateGroupViewController
@@ -39,11 +41,13 @@
 {
     [super viewDidLoad];
     
-    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"CellID"];
+//    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"CellID"];
     
 //    UILabel *beaconTableText=[[UILabel alloc]initWithFrame:CGRectMake(20, 160, 280, 20)];
 //    beaconTableText.text=@"Beacons Available:";
 //    [self.view addSubview:beaconTableText];
+    
+    _selectedBeacons = [[NSMutableSet alloc] init];
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
     headerView.backgroundColor = [UIColor whiteColor];
@@ -54,7 +58,7 @@
     
     _tableView.tableHeaderView = headerView;
     
-    UIBarButtonItem *saveButton=[[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(goToSave)];
+    UIBarButtonItem *saveButton=[[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:@selector(goToEditScreen)];
     [self.navigationItem setRightBarButtonItem:saveButton];
     
 }
@@ -63,6 +67,22 @@
     
     [super viewWillAppear:animated];
  
+    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *estBeacons, NSArray *parseBeacons, NSError *error) {
+        
+        estBeacons = [estBeacons filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"NOT (SELF.proximityUUID.UUIDString IN %@)", [parseBeacons valueForKey:@"proximityUUID"]]];
+       
+        NSSet *set = [NSSet setWithArray:[_beaconsList valueForKey:@"proximityUUID"]];
+        NSSet *set1 = [NSSet setWithArray:[estBeacons valueForKey:@"proximityUUID"]];
+        
+        if (![set isEqual:set1]) {
+            
+            _beaconsList = estBeacons;
+            [_tableView reloadData];
+            
+        }
+        
+    }];
+    
 //    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
 //        
 //        NSSet *set = [NSSet setWithArray:[_beaconsList valueForKey:@"proximityUUID"]];
@@ -81,6 +101,19 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)goToEditScreen {
+    
+    [[BeaconManager sharedManager] setEstBeacons:[_selectedBeacons allObjects]];
+    
+    PFObject *group = [[PFObject alloc] initWithClassName:@"Group"];
+    group[@"owner"] = [PFUser currentUser];
+    group[@"name"] = _enterGroupName.text;
+    
+    EditGroupViewController *editGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"editGroupViewController"];
+    editGroup.group = group;
+    [self.navigationController pushViewController:editGroup animated:YES];
 }
 
 /*- (IBAction)quitButtonClicked:(id)sender {
@@ -159,24 +192,45 @@
 
     static NSString *CellIdentifier = @"CellID";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    UISwitch *mySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(130, 235, 0, 0)];
-    [mySwitch addTarget:self action:@selector(changeSwitch:) forControlEvents:UIControlEventValueChanged];
-    cell.accessoryView=mySwitch;
+    if (!cell) {
+        
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
+    
+//    UISwitch *mySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(130, 235, 0, 0)];
+//    [mySwitch addTarget:self action:@selector(changeSwitch:) forControlEvents:UIControlEventValueChanged];
+//    cell.accessoryView=mySwitch;
     
     ESTBeacon *beacon = self.beaconsList[indexPath.row];
     
-    cell.textLabel.text = beacon.proximityUUID.UUIDString;
-    NSNumber *major=beacon.major;
-    NSNumber *minor=beacon.minor;
-    NSString *temp=[NSString stringWithFormat:@"Major:%@ Minor:%@",major,minor];
-    cell.detailTextLabel.text=temp;
+    if ([_selectedBeacons containsObject:beacon]) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"Beacon %ld", indexPath.row + 1];//beacon.proximityUUID.UUIDString;
+    NSNumber *major = beacon.major;
+    NSNumber *minor = beacon.minor;
+    NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
+    cell.detailTextLabel.text = temp;
     
     
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (![_selectedBeacons containsObject:_beaconsList[indexPath.row]]) {
+        [_selectedBeacons addObject:_beaconsList[indexPath.row]];
+    }
+    else {
+        
+        [_selectedBeacons removeObject:_beaconsList[indexPath.row]];
+    }
+    
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+}
 
 - (void)changeSwitch:(id)sender{
     if([sender isOn]){

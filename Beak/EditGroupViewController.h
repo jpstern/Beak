@@ -10,6 +10,7 @@
 
 @interface EditGroupViewController : UITableViewController
 
+@property (nonatomic, strong) NSArray *beacons;
 @property (nonatomic, strong) PFObject *group;
 
 @end

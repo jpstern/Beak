@@ -8,11 +8,11 @@
 
 #import "EditGroupViewController.h"
 
+#import "AddMessageViewController.h"
+
 #import "EditGroupCell.h"
 
 @interface EditGroupViewController ()
-
-@property (nonatomic, strong) NSArray *beacons;
 
 @end
 
@@ -27,11 +27,52 @@
     return self;
 }
 
+- (void)saveGroup {
+    
+    [_group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    
+        for (PFObject *beacon in _beacons) {
+            
+            beacon[@"group"] = _group;
+            [beacon saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                NSString *mapId = [NSString stringWithFormat:@"%@%@", beacon[@"minor"], beacon[@"major"]];
+                
+                NSArray *messages = [[BeaconManager sharedManager] currentMessages][mapId];
+                
+                for (PFObject *message in messages) {
+                    
+                    message[@"beacon"] = beacon;
+                    [message saveInBackground];
+                }
+                
+            }];
+        }
+        
+    }];
+    
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    NSMutableArray *beacons = [[NSMutableArray alloc] init];
+    for (ESTBeacon *estBeacon in [[BeaconManager sharedManager] estBeacons]) {
+        PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
+        beacon[@"proximityUUID"] = estBeacon.proximityUUID.UUIDString;
+        beacon[@"major"] = estBeacon.major;
+        beacon[@"minor"] = estBeacon.minor;
+        [beacons addObject:beacon];
+    }
+    
+    _beacons = beacons;
+    
     [self.tableView registerClass:[EditGroupCell class] forCellReuseIdentifier:@"CellID"];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(saveGroup)];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -40,19 +81,29 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    [self.tableView reloadData];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
     
-        self.viewDeckController.panningMode = IIViewDeckNoPanning;
+    self.viewDeckController.panningMode = IIViewDeckNoPanning;
     
-    [[BeaconManager sharedManager] getBeaconsForGroup:_group andCompletion:^(NSArray *beacons, NSError *error) {
-       
-        _beacons = beacons;
+    if (!_beacons) {
         
-        [self.tableView reloadData];
-        
-    }];
+        [[BeaconManager sharedManager] getBeaconsForGroup:_group andCompletion:^(NSArray *beacons, NSError *error) {
+            
+            _beacons = beacons;
+            
+            [self.tableView reloadData];
+            
+        }];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -66,6 +117,19 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)addMessage:(UIButton *)button {
+    
+    NSInteger index = button.tag;
+    
+    PFObject *beacon = _beacons[index];
+    
+    AddMessageViewController *addMessage = [self.storyboard instantiateViewControllerWithIdentifier:@"addMessageViewController"];
+    addMessage.beaconObj = beacon;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:addMessage];
+    [self.navigationController presentViewController:nav animated:YES completion:nil];
+
 }
 
 #pragma mark - Table view data source
@@ -82,38 +146,58 @@
     return _beacons.count;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return 54;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     EditGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CellID" forIndexPath:indexPath];
     
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 60, 40)];
-    UIButton *edit = [UIButton buttonWithType:UIButtonTypeCustom];
-    edit.frame = CGRectMake(0, 0, 60, 40);
-    [edit setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
-    [edit setTitle:@"Edit" forState:UIControlStateNormal];
-    [view addSubview:edit];
-    cell.accessoryView = view;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+    cell.message.tag = indexPath.row;
+    [cell.message addTarget:self action:@selector(addMessage:) forControlEvents:UIControlEventTouchUpInside];
     
     PFObject *beacon = _beacons[indexPath.row];
     
-    [beacon fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-       
-        cell.textLabel.text = object[@"name"] ? object[@"name"] : object[@"proximityUUID"];
-    }];
+    if (beacon.objectId) {
+        
+        [beacon fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            
+            if (object[@"name"])
+                cell.beaconName.text = object[@"name"];// ? object[@"name"] : @"Name this beacon";
+            else
+                cell.beaconName.placeholder = @"Name this beacon";
+        }];
+    }
+    else {
+        
+        cell.beaconName.placeholder = @"Name this beacon";
+    }
     
+    NSNumber *major = beacon[@"major"];
+    NSNumber *minor = beacon[@"minor"];
+    NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
+    cell.detailTextLabel.text = temp;
+    
+    NSString *mapId = [NSString stringWithFormat:@"%@%@", beacon[@"minor"], beacon[@"major"]];
+    NSArray *messages = [[BeaconManager sharedManager] currentMessages][mapId];
+    
+    cell.count.text = [NSString stringWithFormat:@"(%ld)", messages ? messages.count : 0];
+
+
     return cell;
 }
 
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
+//// Override to support conditional editing of the table view.
+//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    
+//    return [_beacons[indexPath.row] objectId]
+//}
 
 
 // Override to support editing the table view.
@@ -123,7 +207,8 @@
         
         PFObject *group = _beacons[indexPath.row];
         
-        [group deleteInBackground];
+        if (group.objectId)
+            [group deleteInBackground];
         
         NSMutableArray *beaconsMutable = [_beacons mutableCopy];
         [beaconsMutable removeObjectAtIndex:indexPath.row];
@@ -134,7 +219,6 @@
                          withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
-
 
 /*
 // Override to support rearranging the table view.

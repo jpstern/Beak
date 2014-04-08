@@ -44,6 +44,8 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
         self.beaconManager.delegate = self;
         self.beaconManager.avoidUnknownStateBeacons = YES;
         
+        _currentMessages = [[NSMutableDictionary alloc] init];
+        
     }
     
     return self;
