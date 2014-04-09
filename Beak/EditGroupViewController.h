@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EditGroupViewController : UITableViewController
+@interface EditGroupViewController : UITableViewController <UITextFieldDelegate>
 
 @property (nonatomic, strong) NSArray *beacons;
 @property (nonatomic, strong) PFObject *group;
+
+
 
 @end

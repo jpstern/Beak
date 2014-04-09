@@ -12,7 +12,10 @@
 
 #import "EditGroupCell.h"
 
-@interface EditGroupViewController ()
+@interface EditGroupViewController () {
+    
+    UITextField *activeField;
+}
 
 @end
 
@@ -29,17 +32,26 @@
 
 - (void)saveGroup {
     
+    [activeField resignFirstResponder];
+    
+    NSDictionary *currentMessages = [[[BeaconManager sharedManager] currentMessages] copy];
+    
+    [[BeaconManager sharedManager] setCurrentMessages:nil];
+    [[BeaconManager sharedManager] setEstBeacons:nil];
+    
+    _group[@"beaconCount"] = @(_beacons.count);
+    
     [_group saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
     
         for (PFObject *beacon in _beacons) {
             
+            NSString *mapId = [NSString stringWithFormat:@"%@%@", beacon[@"minor"], beacon[@"major"]];
+            
+            NSArray *messages = currentMessages[mapId];
+            
             beacon[@"group"] = _group;
             [beacon saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                NSString *mapId = [NSString stringWithFormat:@"%@%@", beacon[@"minor"], beacon[@"major"]];
-                
-                NSArray *messages = [[BeaconManager sharedManager] currentMessages][mapId];
-                
+                                
                 for (PFObject *message in messages) {
                     
                     message[@"beacon"] = beacon;
@@ -59,16 +71,20 @@
 {
     [super viewDidLoad];
     
-    NSMutableArray *beacons = [[NSMutableArray alloc] init];
-    for (ESTBeacon *estBeacon in [[BeaconManager sharedManager] estBeacons]) {
-        PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
-        beacon[@"proximityUUID"] = estBeacon.proximityUUID.UUIDString;
-        beacon[@"major"] = estBeacon.major;
-        beacon[@"minor"] = estBeacon.minor;
-        [beacons addObject:beacon];
-    }
     
-    _beacons = beacons;
+    NSArray *arr = [[BeaconManager sharedManager] estBeacons];
+    if (arr) {
+        NSMutableArray *beacons = [[NSMutableArray alloc] init];
+        for (ESTBeacon *estBeacon in arr) {
+            PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
+            beacon[@"proximityUUID"] = estBeacon.proximityUUID.UUIDString;
+            beacon[@"major"] = estBeacon.major;
+            beacon[@"minor"] = estBeacon.minor;
+            [beacons addObject:beacon];
+        }
+        
+        _beacons = beacons;
+    }
     
     [self.tableView registerClass:[EditGroupCell class] forCellReuseIdentifier:@"CellID"];
     
@@ -132,6 +148,19 @@
 
 }
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    activeField = textField;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+    PFObject *beacon = _beacons[textField.tag];
+    beacon[@"name"] = textField.text;
+    
+    activeField = nil;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -157,10 +186,19 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
+    cell.beaconName.tag = indexPath.row;
+    cell.beaconName.delegate = self;
     cell.message.tag = indexPath.row;
     [cell.message addTarget:self action:@selector(addMessage:) forControlEvents:UIControlEventTouchUpInside];
     
     PFObject *beacon = _beacons[indexPath.row];
+    
+    NSNumber *major = beacon[@"major"];
+    NSNumber *minor = beacon[@"minor"];
+    NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
+    cell.detailTextLabel.text = temp;
+        
+    cell.count.text = [NSString stringWithFormat:@"(%@)", beacon[@"messageCount"] ? beacon[@"messageCount"] : @(0)];
     
     if (beacon.objectId) {
         
@@ -177,38 +215,21 @@
         cell.beaconName.placeholder = @"Name this beacon";
     }
     
-    NSNumber *major = beacon[@"major"];
-    NSNumber *minor = beacon[@"minor"];
-    NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
-    cell.detailTextLabel.text = temp;
-    
-    NSString *mapId = [NSString stringWithFormat:@"%@%@", beacon[@"minor"], beacon[@"major"]];
-    NSArray *messages = [[BeaconManager sharedManager] currentMessages][mapId];
-    
-    cell.count.text = [NSString stringWithFormat:@"(%ld)", messages ? messages.count : 0];
+  
 
 
     return cell;
 }
-
-
-//// Override to support conditional editing of the table view.
-//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    
-//    return [_beacons[indexPath.row] objectId]
-//}
-
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        PFObject *group = _beacons[indexPath.row];
+        PFObject *beacon = _beacons[indexPath.row];
         
-        if (group.objectId)
-            [group deleteInBackground];
+        if (beacon.objectId)
+            [beacon deleteInBackground];
         
         NSMutableArray *beaconsMutable = [_beacons mutableCopy];
         [beaconsMutable removeObjectAtIndex:indexPath.row];

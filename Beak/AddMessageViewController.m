@@ -36,6 +36,8 @@
     
     [activeView resignFirstResponder];
     
+    _beaconObj[@"messageCount"] = @(_messages.count);
+    
     [[[BeaconManager sharedManager] currentMessages] setObject:_messages forKey:[NSString stringWithFormat:@"%@%@", _beaconObj[@"minor"], _beaconObj[@"major"]]];
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -115,8 +117,22 @@
     _textViews = [[NSMutableArray alloc] init];
     
     NSArray *currentMessages = [[BeaconManager sharedManager] currentMessages][[NSString stringWithFormat:@"%@%@", _beaconObj[@"minor"], _beaconObj[@"major"]]];
-    
-    if (currentMessages) {
+
+    if ([_beaconObj[@"messageCount"] intValue] != currentMessages.count) {
+     
+        PFQuery *query = [PFQuery queryWithClassName:@"Message"];
+        [query whereKey:@"beacon" equalTo:_beaconObj];
+        
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+           
+            _messages = [objects mutableCopy];
+            
+            [_tableView reloadData];
+            
+        }];
+        
+    }
+    else if (currentMessages) {
         
         _messages = [currentMessages mutableCopy];
         
@@ -170,7 +186,7 @@
 
     cell.message.delegate = self;
     cell.message.tag = indexPath.section;
-    cell.message.text = _messages[indexPath.row][@"body"];
+    cell.message.text = _messages[indexPath.section][@"body"];
 
     
     return cell;
@@ -178,8 +194,10 @@
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(MessageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    PFObject *obj = _messages[indexPath.section];
-    obj[@"body"] = cell.message.text;
+    if (NSLocationInRange(indexPath.section, NSMakeRange(0, _messages.count))) {
+        PFObject *obj = _messages[indexPath.section];
+        obj[@"body"] = cell.message.text;
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
