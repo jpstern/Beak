@@ -326,23 +326,22 @@
             
             [subscription fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                
-                PFObject *user = subscription[@"user"];
-                
-                [user fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                    
-                    if ([user.objectId isEqualToString:[[PFUser currentUser] objectId]]) {
-                        
-                        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-                    }
-                }];
-                
-                //            if ([subscription.parseClassName isEqualToString:@"Subscription"]) {
-                
                 PFObject *group = [subscription objectForKey:@"group"];
                 [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                     
                     cell.textLabel.text = [object objectForKey:@"name"];
                     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ beacon%@", group[@"beaconCount"], [group[@"beaconCount"] intValue] == 1 ? @"" : @"s"];
+                    
+                    PFObject *user = group[@"user"];
+                    
+                    [user fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                        
+                        if ([user.objectId isEqualToString:[[PFUser currentUser] objectId]]) {
+                            
+                            cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                        }
+                    }];
+
                     
                 }];
                 

@@ -36,6 +36,8 @@
 - (void)saveDummyObject;
 
 - (void)subscribeToGroup:(PFObject *)groupObj WithCompletion:(void (^)(PFObject *subscription))block;
+
+- (void)getUserOwnedGroups:(void (^)(NSArray *groups, NSError *error))block;
 - (void)getUserSubscribedGroups:(void (^)(NSArray *groups, NSError *error))block;
 
 - (void)getGroupsForNearbyBeacons:(NSArray *)beaconIds WithCompletion:(void (^)(NSArray *beacons))block;

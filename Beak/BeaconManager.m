@@ -93,6 +93,13 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     }];
 }
 
+- (void)getUserOwnedGroups:(void (^)(NSArray *, NSError *))block {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Group" predicate:[NSPredicate predicateWithFormat:@"user == %@", [PFUser currentUser]]];
+    
+    [query findObjectsInBackgroundWithBlock:block];
+}
+
 - (void)getUserSubscribedGroups:(void (^)(NSArray *, NSError *))block {
     
     PFQuery *query = [PFQuery queryWithClassName:@"Subscription" predicate:[NSPredicate predicateWithFormat:@"user == %@", [PFUser currentUser]]];
