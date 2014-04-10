@@ -8,6 +8,8 @@
 
 #import "HomeViewController.h"
 #import "BeaconTableDelegate.h"
+#import "CreateGroupViewController.h"
+#import "ManageGroupsViewController.h"
 
 @interface HomeViewController () <ESTBeaconManagerDelegate> {
     
@@ -59,6 +61,22 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
     
+    //if new user with no groups created/subscribed
+    
+    UIButton *createGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [createGroupButton addTarget:self action:@selector(createGroup) forControlEvents:UIControlEventTouchUpInside];
+    [createGroupButton setTitle:@"Create a Group" forState:UIControlStateNormal];
+    createGroupButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+    [self.view addSubview:createGroupButton];
+    
+    UIButton *manageGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [manageGroupButton addTarget:self action:@selector(manageGroup) forControlEvents:UIControlEventTouchUpInside];
+    [manageGroupButton setTitle:@"Manage Group" forState:UIControlStateNormal];
+    manageGroupButton.frame = CGRectMake(80.0, 250.0, 160.0, 40.0);
+    [self.view addSubview:manageGroupButton];
+    
+    
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -108,6 +126,20 @@
     contentShown = YES;
     _imageView.hidden = NO;
     
+}
+
+-(void)createGroup
+{
+    NSLog(@"goToCG!");
+    CreateGroupViewController *createGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"createGroupViewController"];
+    [self.navigationController pushViewController:createGroup animated:YES];
+}
+
+-(void)manageGroup
+{
+    NSLog(@"goToMG!");
+    ManageGroupsViewController *manageGroup =[self.storyboard instantiateViewControllerWithIdentifier:@"manageGroupViewController"];
+    [self.navigationController pushViewController:manageGroup animated:YES];
 }
 
 @end
