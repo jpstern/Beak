@@ -13,6 +13,6 @@
 @property (nonatomic, strong) NSArray *beacons;
 @property (nonatomic, strong) PFObject *group;
 
-
+@property (nonatomic, assign) BOOL edit;
 
 @end

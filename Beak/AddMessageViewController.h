@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AddMessageViewController : UIViewController <UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate>
+@interface AddMessageViewController : UIViewController <UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 

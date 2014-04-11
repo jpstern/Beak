@@ -30,6 +30,13 @@
     return self;
 }
 
+- (void)deleteGroup {
+    
+    [_group deleteInBackground];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)saveGroup {
     
     [activeField resignFirstResponder];
@@ -166,13 +173,16 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    return _edit ? 2 : 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return _beacons.count;
+    if (section == 0)
+        return _beacons.count;
+    
+    return 1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -184,38 +194,55 @@
 {
     EditGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CellID" forIndexPath:indexPath];
     
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-    cell.beaconName.tag = indexPath.row;
-    cell.beaconName.delegate = self;
-    cell.message.tag = indexPath.row;
-    [cell.message addTarget:self action:@selector(addMessage:) forControlEvents:UIControlEventTouchUpInside];
+    if (indexPath.section == 0) {
     
-    PFObject *beacon = _beacons[indexPath.row];
-    
-    NSNumber *major = beacon[@"major"];
-    NSNumber *minor = beacon[@"minor"];
-    NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
-    cell.detailTextLabel.text = temp;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-    cell.count.text = [NSString stringWithFormat:@"(%@)", beacon[@"messageCount"] ? beacon[@"messageCount"] : @(0)];
-    
-    if (beacon.objectId) {
+        cell.message.hidden = NO;
+        cell.count.hidden = NO;
+        cell.beaconName.hidden = NO;
+        cell.beaconName.tag = indexPath.row;
+        cell.beaconName.delegate = self;
+        cell.message.tag = indexPath.row;
+        [cell.message addTarget:self action:@selector(addMessage:) forControlEvents:UIControlEventTouchUpInside];
         
-        [beacon fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        PFObject *beacon = _beacons[indexPath.row];
+        
+        NSNumber *major = beacon[@"major"];
+        NSNumber *minor = beacon[@"minor"];
+        NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
+        cell.detailTextLabel.text = temp;
+        
+        cell.count.text = [NSString stringWithFormat:@"(%@)", beacon[@"messageCount"] ? beacon[@"messageCount"] : @(0)];
+        
+        if (beacon.objectId) {
             
-            if (object[@"name"])
-                cell.beaconName.text = object[@"name"];// ? object[@"name"] : @"Name this beacon";
-            else
-                cell.beaconName.placeholder = @"Name this beacon";
-        }];
+            [beacon fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                
+                if (object[@"name"])
+                    cell.beaconName.text = object[@"name"];// ? object[@"name"] : @"Name this beacon";
+                else
+                    cell.beaconName.placeholder = @"Name this beacon";
+            }];
+        }
+        else {
+            
+            cell.beaconName.placeholder = @"Name this beacon";
+        }
+        
+        cell.textLabel.text = @"";
     }
     else {
         
-        cell.beaconName.placeholder = @"Name this beacon";
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        
+        cell.beaconName.hidden = YES;
+        cell.message.hidden = YES;
+        cell.count.hidden = YES;
+        cell.textLabel.text = @"Delete Group";
+        cell.textLabel.textColor = [UIColor redColor];
+        
     }
-    
-  
 
 
     return cell;
@@ -238,6 +265,14 @@
         // Delete the row from the data source
         [tableView deleteRowsAtIndexPaths:@[indexPath]
                          withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 1) {
+        
+        [self deleteGroup];
     }
 }
 

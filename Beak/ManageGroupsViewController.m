@@ -243,14 +243,14 @@
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 285, 44)];
     if (section == 0) {
         
-        label.text = @"YOUR GROUPS";
+        label.text = @"YOUR SUBSCRIPTIONS";
     }
     else {
         
-        label.text = @"ADD A NEARBY GROUP";
+        label.text = @"TAP A GROUP TO SUBSCRIBE";
     }
     label.textColor = [UIColor colorWithRed:0.427451 green:0.427451 blue:0.447059 alpha:1];
     label.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
@@ -409,6 +409,7 @@
     
     EditGroupViewController *editGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"editGroupViewController"];
     editGroup.group = group;
+    editGroup.edit = YES;
     [self.navigationController pushViewController:editGroup animated:YES];
 }
 

@@ -35,6 +35,8 @@
 
 - (void)saveDummyObject;
 
+- (void)useDeviceAsBeacon;
+
 - (void)subscribeToGroup:(PFObject *)groupObj WithCompletion:(void (^)(PFObject *subscription))block;
 
 - (void)getUserOwnedGroups:(void (^)(NSArray *groups, NSError *error))block;

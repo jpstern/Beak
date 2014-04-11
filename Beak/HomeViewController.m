@@ -24,12 +24,7 @@
 @implementation HomeViewController
 
 - (void)showProfile {
-    
-//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-//    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"profileNavigationController"];
-//    [self presentViewController:controller animated:YES completion:nil];
-    
-    
+
     [PFFacebookUtils logInWithPermissions:@[@"email"] block:^(PFUser *user, NSError *error) {
 
         if (!user) {
@@ -49,16 +44,29 @@
     
 }
 
+- (void)openRight {
+    
+    [self.viewDeckController openRightViewAnimated:YES];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:255/255.0 green:135/255.0 blue:60/255.0 alpha:1]];
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:20], NSForegroundColorAttributeName: [UIColor whiteColor]}];
+
     
     [[BeaconManager sharedManager] setDelegate:self];
     
     _imageView.hidden = YES;
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"side"] style:UIBarButtonItemStylePlain target:self action:@selector(openRight)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -16,11 +16,29 @@
     if (self) {
         // Initialization code
         
-        _message = [[UITextView alloc] initWithFrame:CGRectZero];
-        [self.contentView addSubview:_message];
-        
     }
     return self;
+}
+
+- (UITextView *)message {
+    
+    if (!_message) {
+        
+        _message = [[UITextView alloc] initWithFrame:CGRectZero];
+        [self.contentView addSubview:_message];
+    }
+    
+    return _message;
+}
+
+- (UIImageView *)imageThumb {
+    
+    if (!_imageThumb) {
+        
+        _imageThumb = [[UIImageView alloc] initWithFrame:CGRectZero];
+    }
+    
+    return _imageThumb;
 }
 
 - (void)layoutSubviews {
@@ -28,6 +46,7 @@
     [super layoutSubviews];
     
     _message.frame = CGRectMake(0, 0, 320, self.contentView.frame.size.height);
+    _imageThumb.frame = CGRectMake(260, 10, 50, 50);
 }
 
 - (void)awakeFromNib
