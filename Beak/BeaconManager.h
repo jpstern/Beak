@@ -59,6 +59,8 @@
 //- (void)searchForNearbyBeacons:(void (^)(NSArray *beacons, NSError *error))block;
 - (void)stopSearchingForBeacons;
 
+- (void)getExistingMessagesForUser:(void (^)(NSArray *messages, NSError *error))block;
+
 /**
  
  method to save a user generated group and associate it with beacons

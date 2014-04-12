@@ -15,4 +15,6 @@
 @property (nonatomic, strong) UIButton *message;
 @property (nonatomic, strong) UILabel *count;
 
+@property (nonatomic, strong) UITextView *joinMessage;
+
 @end

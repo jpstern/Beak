@@ -19,6 +19,8 @@
 
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
+@property (nonatomic, strong) NSArray *messages;
+
 @end
 
 @implementation HomeViewController
@@ -54,11 +56,6 @@
     [super viewDidLoad];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:255/255.0 green:135/255.0 blue:60/255.0 alpha:1]];
-    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
-    
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:20], NSForegroundColorAttributeName: [UIColor whiteColor]}];
-
     
     [[BeaconManager sharedManager] setDelegate:self];
     
@@ -73,6 +70,11 @@
     
     [super viewWillAppear:animated];
 
+    [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
+        
+        NSLog(@"%@", messages);
+        
+    }];
     
 }
 

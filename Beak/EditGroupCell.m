@@ -36,6 +36,17 @@
     return self;
 }
 
+- (UITextView *)joinMessage {
+    
+    if (!_joinMessage) {
+        
+        _joinMessage = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, 150)];
+        [self.contentView addSubview:_joinMessage];
+    }
+    
+    return _joinMessage;
+}
+
 - (void)layoutSubviews {
     
     [super layoutSubviews];

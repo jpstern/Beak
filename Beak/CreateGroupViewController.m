@@ -105,6 +105,7 @@
     
     EditGroupViewController *editGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"editGroupViewController"];
     editGroup.group = group;
+    editGroup.useDevice = _shouldUseThisDevice;
     [self.navigationController pushViewController:editGroup animated:YES];
 }
 
@@ -220,6 +221,7 @@
         
         UISwitch *mySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
         [mySwitch addTarget:self action:@selector(useDeviceToggled:) forControlEvents:UIControlEventValueChanged];
+        [mySwitch setOn:_shouldUseThisDevice];
         cell.accessoryView = mySwitch;
         
         cell.textLabel.text = @"Use this device as a beacon";

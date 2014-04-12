@@ -17,7 +17,6 @@ static NSString *kPhotoCell = @"PhotoCell";
 @interface AddMessageViewController () {
     
     UITextView *activeView;
-    
 }
 
 @property (nonatomic, strong) NSMutableArray *messages;
@@ -289,7 +288,6 @@ static NSString *kPhotoCell = @"PhotoCell";
         }
         
     }
-
     
     return cell;
 }
@@ -301,6 +299,7 @@ static NSString *kPhotoCell = @"PhotoCell";
         PFObject *obj = _messages[indexPath.section];
         
         if (obj[@"type"] && [obj[@"type"] isEqualToString:@"text"]) {
+            
             obj[@"body"] = cell.message.text;
         }
     }

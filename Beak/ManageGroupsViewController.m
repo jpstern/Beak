@@ -252,6 +252,7 @@
         
         label.text = @"TAP A GROUP TO SUBSCRIBE";
     }
+    
     label.textColor = [UIColor colorWithRed:0.427451 green:0.427451 blue:0.447059 alpha:1];
     label.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
     [view addSubview:label];

@@ -20,6 +20,11 @@
     
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:18]} forState:UIControlStateNormal];
     
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:255/255.0 green:135/255.0 blue:60/255.0 alpha:1]];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:20], NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    
     // Override point for customization after application launch.
     return YES;
 }
