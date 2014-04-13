@@ -340,7 +340,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     NSNumber *minor = region.minor;
     NSString *uuid = [region.proximityUUID UUIDString];
     
-    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"proximityUUID == %@ AND majorValue == %@ AND minorValue == %@", uuid, major, minor]];
+    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"proximityUUID == %@ AND major == %@ AND minor == %@", uuid, major, minor]];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
@@ -348,7 +348,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
             
             PFObject *beacon = objects[0];
             
-            PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"beaconId == %@", beacon.objectId]];
+            PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"SELF.beacon == %@", beacon]];
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
@@ -361,6 +361,8 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
                     PFObject *message = objects[0];
                     
                     [_delegate didReceiveEnteredRegionMessage:message];
+                    
+                    
                 }
                 
             }];
@@ -374,6 +376,16 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
         
     }];
     
+}
+
+- (void)addMessageToUserMessages:(PFObject *)message {
+    
+    PFObject *userMessage = [PFObject objectWithClassName:@"Message"];
+    
+    userMessage[@"user"] = [PFUser currentUser];
+    userMessage[@"message"] = message;
+    
+    [userMessage saveInBackground];
 }
 
 - (void)getWelcomeMessageForGroup:(PFObject *)groupObj

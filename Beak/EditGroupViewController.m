@@ -78,6 +78,7 @@
                                 
                 for (PFObject *message in messages) {
                     
+                    message[@"group"] = _group;
                     message[@"beacon"] = beacon;
                     [message saveInBackground];
                 }

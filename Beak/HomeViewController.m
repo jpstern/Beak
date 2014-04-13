@@ -85,10 +85,12 @@
 
 - (void)didEnterRegion {
     
-    
+    NSLog(@"entered region");
 }
 
 - (void)didReceiveEnteredRegionMessage:(PFObject *)message {
+    
+    NSLog(@"%@", message);
     
 }
 

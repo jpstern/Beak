@@ -312,24 +312,17 @@
                     cell.textLabel.text = [object objectForKey:@"name"];
                     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ beacon%@", group[@"beaconCount"], [group[@"beaconCount"] intValue] == 1 ? @"" : @"s"];
                     
-                    PFObject *user = group[@"user"];
+                    PFObject *owner = group[@"owner"];
                     
-                    [user fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    [owner fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                         
-                        if ([user.objectId isEqualToString:[[PFUser currentUser] objectId]]) {
+                        if ([owner.objectId isEqualToString:[[PFUser currentUser] objectId]]) {
                             
                             cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
                         }
                     }];
-
                     
                 }];
-                
-                //            }
-                //            else if ([subscription.parseClassName isEqualToString:@"Group"]) {
-                //
-                //                cell.groupName.text = [subscription objectForKey:@"name"];
-                //            }
                 
             }];
             
