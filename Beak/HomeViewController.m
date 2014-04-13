@@ -19,7 +19,8 @@
 @property (nonatomic, strong) BeaconManager *beaconManager;
 @property (nonatomic, strong) BeaconTableDelegate *tableDelegate;
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
-@property (nonatomic, strong) NSArray *messages;
+@property (nonatomic, strong) NSArray *takeMessages;
+
 @end
 
 @implementation HomeViewController
@@ -136,6 +137,7 @@
 {
     [self.refreshControl beginRefreshing];
     [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
+        self.takeMessages=messages;
         
         //if there are no messages show create and manage button
         if(messages.count==0)
@@ -153,10 +155,64 @@
             [self.view addSubview:manageGroupButton];
             
         }
+        else
+        {
+            [self.tableView reloadData];
+        }
         NSLog(@"%@", messages);
         [self.refreshControl endRefreshing];
     }];
 
 }
+
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    return 44;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    NSLog(@"Messages count %@",self.takeMessages.count);
+    return self.takeMessages.count;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (section == 0)
+        return 1;
+    else
+        return 1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    static NSString *CellIdentifier = @"CellID";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    if (!cell) {
+        
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
+    
+    
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    
+}
+
 
 @end
