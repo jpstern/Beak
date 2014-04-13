@@ -48,7 +48,7 @@
 
 - (void)openRight {
     
-    [self.viewDeckController openRightViewAnimated:YES];
+    [self.viewDeckController toggleRightViewAnimated:YES];
 }
 
 - (void)viewDidLoad
@@ -84,39 +84,12 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)switchToggled:(UISwitch*)toggle {
-
-    PFObject *group = _tableDelegate.groups[toggle.tag];
-    
-    [[BeaconManager sharedManager] monitorBeaconsForGroup:group.objectId];
-}
-
 - (void)didEnterRegion {
     
-    if (!contentShown) {
-        
-        self.title = @"Loading Content!";
-        _textView.text = @"";
-        
-        _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        _indicator.center = CGPointMake(160, self.view.frame.size.height / 2);
-        [self.view addSubview:_indicator];
-        
-        [_indicator startAnimating];
-    }
+    
 }
 
 - (void)didReceiveEnteredRegionMessage:(PFObject *)message {
-    
-    [_indicator removeFromSuperview];
-    _indicator = nil;
-    
-    self.title = message[@"title"];
-    _textView.text = message[@"body"];
-    NSLog(@"%@", _textView.text);
-    
-    contentShown = YES;
-    _imageView.hidden = NO;
     
 }
 

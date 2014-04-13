@@ -197,8 +197,6 @@
        
         cell.accessoryType = UITableViewCellAccessoryNone;
         
-//        [[_subscriptions mutableCopy] addObject:group];
-        
         NSMutableArray *temp = [_subscriptions mutableCopy];
         [temp addObject:subscription];
         _subscriptions = temp;
@@ -209,27 +207,8 @@
         
         [self.tableView reloadData];
         
-//        [self.tableView beginUpdates];
-//        
-//        if (_subscriptions.count == 0) {
-//            [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:_subscriptions.count - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-//        }
-//        else {
-//            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-//        }
-//        
-//        if (_nearby.count == 0) {
-//        
-//            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-//        }
-//        else {
-//            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//        }
-//        
-//        [self.tableView endUpdates];
     }];
-    
-    
+
 }
 
 #pragma mark UITableView stuff
