@@ -57,6 +57,12 @@
 {
     [super viewDidLoad];
     
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
+                                        init];
+    [refreshControl addTarget:self action:@selector(callRefresh) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refreshControl;
+    
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     [[BeaconManager sharedManager] setDelegate:self];
@@ -73,29 +79,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-
-    [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
-    
-        //if there are no messages show create and manage button
-        if(messages.count==0)
-        {
-            UIButton *createGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-            [createGroupButton addTarget:self action:@selector(createGroup) forControlEvents:UIControlEventTouchUpInside];
-            [createGroupButton setTitle:@"Create a Group" forState:UIControlStateNormal];
-            createGroupButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
-            [self.view addSubview:createGroupButton];
-            
-            UIButton *manageGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-            [manageGroupButton addTarget:self action:@selector(manageGroup) forControlEvents:UIControlEventTouchUpInside];
-            [manageGroupButton setTitle:@"Manage Group" forState:UIControlStateNormal];
-            manageGroupButton.frame = CGRectMake(80.0, 250.0, 160.0, 40.0);
-            [self.view addSubview:manageGroupButton];
-
-        }
-        NSLog(@"%@", messages);
-        
-    }];
-    
     
 }
 
@@ -153,6 +136,33 @@
     NSLog(@"goToMG!");
     ManageGroupsViewController *manageGroup =[self.storyboard instantiateViewControllerWithIdentifier:@"manageViewController"];
     [self.navigationController pushViewController:manageGroup animated:YES];
+}
+
+-(void)callRefresh
+{
+    [self.refreshControl beginRefreshing];
+    [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
+        
+        //if there are no messages show create and manage button
+        if(messages.count==0)
+        {
+            UIButton *createGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [createGroupButton addTarget:self action:@selector(createGroup) forControlEvents:UIControlEventTouchUpInside];
+            [createGroupButton setTitle:@"Create a Group" forState:UIControlStateNormal];
+            createGroupButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+            [self.view addSubview:createGroupButton];
+            
+            UIButton *manageGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [manageGroupButton addTarget:self action:@selector(manageGroup) forControlEvents:UIControlEventTouchUpInside];
+            [manageGroupButton setTitle:@"Manage Group" forState:UIControlStateNormal];
+            manageGroupButton.frame = CGRectMake(80.0, 250.0, 160.0, 40.0);
+            [self.view addSubview:manageGroupButton];
+            
+        }
+        NSLog(@"%@", messages);
+        [self.refreshControl endRefreshing];
+    }];
+
 }
 
 @end
