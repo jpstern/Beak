@@ -37,6 +37,7 @@
 		80EA838018EE151800981338 /* libEstimoteSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA837F18EE151800981338 /* libEstimoteSDK.a */; };
 		80EA838618EE371900981338 /* EditGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA838518EE371900981338 /* EditGroupViewController.m */; };
 		80EA838918EE3A7A00981338 /* EditGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA838818EE3A7A00981338 /* EditGroupCell.m */; };
+		8E8E418018FB0F07002D4064 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E417F18FB0F06002D4064 /* LoginViewController.m */; };
 		B9E4B49018D8112C00845272 /* CreateGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */; };
 		BFC108D02E704E8F88EF5B6A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C4AA03E3597450FB4B29218 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -106,6 +107,8 @@
 		80EA838518EE371900981338 /* EditGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditGroupViewController.m; sourceTree = "<group>"; };
 		80EA838718EE3A7A00981338 /* EditGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditGroupCell.h; sourceTree = "<group>"; };
 		80EA838818EE3A7A00981338 /* EditGroupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditGroupCell.m; sourceTree = "<group>"; };
+		8E8E417E18FB0F06002D4064 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		8E8E417F18FB0F06002D4064 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateGroupViewController.h; sourceTree = "<group>"; };
 		B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateGroupViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -182,6 +185,8 @@
 				808604BC18CD309F00ABA33B /* AppDelegate.h */,
 				808604BD18CD309F00ABA33B /* AppDelegate.m */,
 				808604BF18CD309F00ABA33B /* Main.storyboard */,
+				8E8E417E18FB0F06002D4064 /* LoginViewController.h */,
+				8E8E417F18FB0F06002D4064 /* LoginViewController.m */,
 				B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */,
 				B9E4B48E18D7762D00845272 /* CreateGroupViewController.m */,
 				80C3E94718D926D30096D787 /* ManageGroupsViewController.h */,
@@ -409,6 +414,7 @@
 				80EA834E18EB50AF00981338 /* MyViewDeckViewController.m in Sources */,
 				80C3E94918D926D30096D787 /* ManageGroupsViewController.m in Sources */,
 				800BA1E718CE98E00031E651 /* BeaconTableDelegate.m in Sources */,
+				8E8E418018FB0F07002D4064 /* LoginViewController.m in Sources */,
 				B9E4B49018D8112C00845272 /* CreateGroupViewController.m in Sources */,
 				808604BA18CD309F00ABA33B /* main.m in Sources */,
 				80EA835418EB571100981338 /* MenuTableViewCell.m in Sources */,
@@ -544,6 +550,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beak/Beak-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -560,7 +567,7 @@
 					"$(PROJECT_DIR)/Beak/EstimoteSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "C309A650-40CB-4190-AF6C-2317C4ACC29D";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -572,6 +579,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beak/Beak-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -588,7 +596,7 @@
 					"$(PROJECT_DIR)/Beak/EstimoteSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "C309A650-40CB-4190-AF6C-2317C4ACC29D";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

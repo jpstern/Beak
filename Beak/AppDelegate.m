@@ -25,6 +25,8 @@
     
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:20], NSForegroundColorAttributeName: [UIColor whiteColor]}];
     
+    [FBLoginView class];
+    
     // Override point for customization after application launch.
     return YES;
 }
