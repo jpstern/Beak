@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<<<<<<< HEAD
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="fbz-VZ-ZGr">
+=======
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ZNR-0x-G2C">
+>>>>>>> 364c346a150e0446ad1a960aff6e634879b5cd7e
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -294,10 +298,61 @@
             </objects>
             <point key="canvasLocation" x="-178" y="1724"/>
         </scene>
+        <!--Login View Controller-->
+        <scene sceneID="1k8-1g-va0">
+            <objects>
+                <viewController id="ZNR-0x-G2C" customClass="LoginViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gCV-Gu-3xo"/>
+                        <viewControllerLayoutGuide type="bottom" id="AnO-8j-lcP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="g0M-LR-BLp">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text="Welcome to Beak!" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fQY-bc-uft">
+                                <rect key="frame" x="50" y="23" width="221" height="62"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="beakon" translatesAutoresizingMaskIntoConstraints="NO" id="xdH-er-GSG">
+                                <rect key="frame" x="77" y="93" width="167" height="103"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                            </imageView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text="Beak is a proprietary app that enables you to work seamlessly with Estimote iBeacons. Login with Facebook to get started!" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fih-aL-cD3">
+                                <rect key="frame" x="40" y="248" width="243" height="186"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Vs-6j-Lad">
+                                <rect key="frame" x="65" y="480" width="193" height="43"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="facebook login">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="loginButtonTouchHandler:" destination="ZNR-0x-G2C" eventType="touchUpInside" id="Z7I-us-KFG"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="fblogin" destination="7Vs-6j-Lad" id="J0G-fm-EEU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aUT-qk-TWP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1999" y="1225"/>
+        </scene>
         <!--My View Deck View Controller-->
         <scene sceneID="fNo-Vj-TYg">
             <objects>
-                <viewController id="fbz-VZ-ZGr" customClass="MyViewDeckViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="myViewDeckViewController" id="fbz-VZ-ZGr" customClass="MyViewDeckViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1OY-sz-Ae0"/>
                         <viewControllerLayoutGuide type="bottom" id="foV-ZX-hHD"/>
@@ -307,6 +362,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" id="bbn-gl-2sc"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cqf-79-WcS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -357,6 +413,10 @@
             <point key="canvasLocation" x="907" y="-30"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="beakon" width="252" height="164"/>
+        <image name="facebook login" width="304" height="62"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
