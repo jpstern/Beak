@@ -65,20 +65,6 @@
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
     
-    //if new user with no groups created/subscribed
-    
-    UIButton *createGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [createGroupButton addTarget:self action:@selector(createGroup) forControlEvents:UIControlEventTouchUpInside];
-    [createGroupButton setTitle:@"Create a Group" forState:UIControlStateNormal];
-    createGroupButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
-    [self.view addSubview:createGroupButton];
-    
-    UIButton *manageGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [manageGroupButton addTarget:self action:@selector(manageGroup) forControlEvents:UIControlEventTouchUpInside];
-    [manageGroupButton setTitle:@"Manage Group" forState:UIControlStateNormal];
-    manageGroupButton.frame = CGRectMake(80.0, 250.0, 160.0, 40.0);
-    [self.view addSubview:manageGroupButton];
-    
     
 
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"side"] style:UIBarButtonItemStylePlain target:self action:@selector(openRight)];
@@ -89,10 +75,27 @@
     [super viewWillAppear:animated];
 
     [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
-        
+    
+        //if there are no messages show create and manage button
+        if(messages.count==0)
+        {
+            UIButton *createGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [createGroupButton addTarget:self action:@selector(createGroup) forControlEvents:UIControlEventTouchUpInside];
+            [createGroupButton setTitle:@"Create a Group" forState:UIControlStateNormal];
+            createGroupButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+            [self.view addSubview:createGroupButton];
+            
+            UIButton *manageGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [manageGroupButton addTarget:self action:@selector(manageGroup) forControlEvents:UIControlEventTouchUpInside];
+            [manageGroupButton setTitle:@"Manage Group" forState:UIControlStateNormal];
+            manageGroupButton.frame = CGRectMake(80.0, 250.0, 160.0, 40.0);
+            [self.view addSubview:manageGroupButton];
+
+        }
         NSLog(@"%@", messages);
         
     }];
+    
     
 }
 
@@ -141,14 +144,14 @@
 -(void)createGroup
 {
     NSLog(@"goToCG!");
-    CreateGroupViewController *createGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"createGroupViewController"];
+    CreateGroupViewController *createGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"createViewController"];
     [self.navigationController pushViewController:createGroup animated:YES];
 }
 
 -(void)manageGroup
 {
     NSLog(@"goToMG!");
-    ManageGroupsViewController *manageGroup =[self.storyboard instantiateViewControllerWithIdentifier:@"manageGroupViewController"];
+    ManageGroupsViewController *manageGroup =[self.storyboard instantiateViewControllerWithIdentifier:@"manageViewController"];
     [self.navigationController pushViewController:manageGroup animated:YES];
 }
 
