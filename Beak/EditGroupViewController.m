@@ -18,7 +18,7 @@
     UITextView *joinMessage;
 }
 
-
+@property (nonatomic, strong) PFObject *welcomeMessage;
 @property (nonatomic, strong) NSDictionary *deviceBeacon;
 
 @end
@@ -45,8 +45,8 @@
     
     [activeField resignFirstResponder];
     
-    
-    if (![joinMessage.text isEqualToString:@"(Optional) Add a message for when a user subscribes"]) {
+    if ([[BeaconManager sharedManager] currentMessages][@"joinMessage"]) {
+//    if (![joinMessage.text isEqualToString:@"(Optional) Add a message for when a user subscribes"]) {
     
         _group[@"hasJoinMessage"] = @(YES);
         
@@ -78,6 +78,7 @@
                                 
                 for (PFObject *message in messages) {
                     
+                    message[@"group"] = _group;
                     message[@"beacon"] = beacon;
                     [message saveInBackground];
                 }
@@ -151,6 +152,8 @@
             [self.tableView reloadData];
             
         }];
+        
+        
     }
 }
 
@@ -191,6 +194,21 @@
     beacon[@"name"] = textField.text;
     
     activeField = nil;
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+    
+    if (![textView.text isEqualToString:@"(Optional) Add a message for when a user subscribes"] && textView.text.length != 0) {
+    
+        [[[BeaconManager sharedManager] currentMessages] setObject:textView.text forKey:@"joinMessage"];
+        
+    }
+    else {
+        
+        [[[BeaconManager sharedManager] currentMessages] removeObjectForKey:@"joinMessage"];
+    }
+    
+    
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
@@ -243,7 +261,32 @@
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-        cell.joinMessage.text = @"(Optional) Add a message for when a user subscribes";
+        BOOL hasWelcome = [_group[@"hasJoinMessage"] boolValue];
+        
+        if (!hasWelcome && ![[BeaconManager sharedManager] currentMessages][@"joinMessage"] && !_welcomeMessage) {
+            cell.joinMessage.text = @"(Optional) Add a message for when a user subscribes";
+        }
+        else {
+            
+            NSString *newMessage = [[BeaconManager sharedManager] currentMessages][@"joinMessage"];
+            
+            if (newMessage) {
+                cell.joinMessage.text = newMessage;
+            }
+            else {
+                
+                [[BeaconManager sharedManager] getWelcomeMessageForGroup:_group andCompletion:^(PFObject *message, NSError *error) {
+                   
+                    [message fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                        
+                        cell.joinMessage.text = object[@"body"];
+                        
+                    }];
+                    
+                }];
+                
+            }
+        }
         cell.joinMessage.delegate = self;
         
         joinMessage = cell.joinMessage;

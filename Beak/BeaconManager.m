@@ -92,9 +92,12 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     [subscription setObject:[PFUser currentUser] forKey:@"user"];
     [subscription setObject:groupObj forKey:@"group"];
     
+    [self monitorBeaconsForGroup:groupObj];
+    
     [subscription saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
        
         block (subscription);
+        
     }];
 }
 
@@ -180,9 +183,10 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     
 }
 
-- (void)monitorBeaconsForGroup:(NSString *)groupId {
+- (void)monitorBeaconsForGroup:(PFObject *)groupObj {
 
-    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"SELF.groupId == %@", groupId]];
+    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"SELF.group == %@", groupObj]];
+//    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"SELF.groupId == %@", groupId]];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
        
@@ -191,14 +195,14 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
             for (PFObject *beacon in objects) {
                 
                 NSString *uuid = [beacon objectForKey:@"proximityUUID"];
-                NSNumber *major = [beacon objectForKey:@"majorValue"];
-                NSNumber *minor = [beacon objectForKey:@"minorValue"];
+                NSNumber *major = [beacon objectForKey:@"major"];
+                NSNumber *minor = [beacon objectForKey:@"minor"];
                 
                 if (uuid && major && minor) {
                     
                     ESTBeaconRegion* region = [[ESTBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:uuid]
                                                                                        major:major.intValue minor:minor.intValue
-                                                                                  identifier:beacon.objectId];
+                                                                                  identifier:groupObj.objectId];
                     [self.beaconManager startMonitoringForRegion:region];
                     [self.beaconManager requestStateForRegion:region];
 
@@ -336,7 +340,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     NSNumber *minor = region.minor;
     NSString *uuid = [region.proximityUUID UUIDString];
     
-    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"proximityUUID == %@ AND majorValue == %@ AND minorValue == %@", uuid, major, minor]];
+    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"proximityUUID == %@ AND major == %@ AND minor == %@", uuid, major, minor]];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
@@ -344,7 +348,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
             
             PFObject *beacon = objects[0];
             
-            PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"beaconId == %@", beacon.objectId]];
+            PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"SELF.beacon == %@", beacon]];
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
@@ -357,6 +361,8 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
                     PFObject *message = objects[0];
                     
                     [_delegate didReceiveEnteredRegionMessage:message];
+                    
+                    
                 }
                 
             }];
@@ -370,6 +376,27 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
         
     }];
     
+}
+
+- (void)addMessageToUserMessages:(PFObject *)message {
+    
+    PFObject *userMessage = [PFObject objectWithClassName:@"Message"];
+    
+    userMessage[@"user"] = [PFUser currentUser];
+    userMessage[@"message"] = message;
+    
+    [userMessage saveInBackground];
+}
+
+- (void)getWelcomeMessageForGroup:(PFObject *)groupObj
+                    andCompletion:(void (^)(PFObject *message, NSError *))block {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"SELF.group == %@", groupObj]];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+       
+        block (objects[0], error);
+    }];
 }
 
 - (void)getExistingMessagesForUser:(void (^)(NSArray *, NSError *))block {
