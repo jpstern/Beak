@@ -15,7 +15,11 @@
 @interface EditGroupViewController () {
     
     UITextField *activeField;
+    UITextView *joinMessage;
 }
+
+
+@property (nonatomic, strong) NSDictionary *deviceBeacon;
 
 @end
 
@@ -30,9 +34,29 @@
     return self;
 }
 
+- (void)deleteGroup {
+    
+    [_group deleteInBackground];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)saveGroup {
     
     [activeField resignFirstResponder];
+    
+    
+    if (![joinMessage.text isEqualToString:@"(Optional) Add a message for when a user subscribes"]) {
+    
+        _group[@"hasJoinMessage"] = @(YES);
+        
+        PFObject *mess = [PFObject objectWithClassName:@"Message"];
+        mess[@"body"] = joinMessage.text;
+        mess[@"isJoinMessage"] = @(YES);
+        mess[@"group"] = _group;
+        [mess saveInBackground];
+        
+    }
     
     NSDictionary *currentMessages = [[[BeaconManager sharedManager] currentMessages] copy];
     
@@ -71,11 +95,24 @@
 {
     [super viewDidLoad];
     
-    
     NSArray *arr = [[BeaconManager sharedManager] estBeacons];
+    
     if (arr) {
+        
         NSMutableArray *beacons = [[NSMutableArray alloc] init];
+        
+        if (_useDevice) {
+            
+            PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
+            beacon[@"proximityUUID"] = [ESTIMOTE_IOSBEACON_PROXIMITY_UUID UUIDString];
+            beacon[@"major"] = @(89898);
+            beacon[@"minor"] = @(10101);
+            beacon[@"isUserDevice"] = @(YES);
+            [beacons addObject:beacon];
+        }
+        
         for (ESTBeacon *estBeacon in arr) {
+            
             PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
             beacon[@"proximityUUID"] = estBeacon.proximityUUID.UUIDString;
             beacon[@"major"] = estBeacon.major;
@@ -90,11 +127,6 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(saveGroup)];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -161,22 +193,45 @@
     activeField = nil;
 }
 
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    
+    if ([textView.text isEqualToString:@"(Optional) Add a message for when a user subscribes"]) {
+        
+        textView.text = @"";
+    }
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    
+    if ([textView.text isEqualToString:@""]) {
+        
+        textView.text = @"(Optional) Add a message for when a user subscribes";
+    }
+}
+
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    return _edit ? 3 : 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return _beacons.count;
+    if (section == 0)
+        return 1;
+    if (section == 1)
+        return _beacons.count;
+    
+    return 1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    if (indexPath.section == 0) return 150;
     return 54;
 }
 
@@ -184,38 +239,78 @@
 {
     EditGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CellID" forIndexPath:indexPath];
     
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    if (indexPath.section == 0) {
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        cell.joinMessage.text = @"(Optional) Add a message for when a user subscribes";
+        cell.joinMessage.delegate = self;
+        
+        joinMessage = cell.joinMessage;
 
-    cell.beaconName.tag = indexPath.row;
-    cell.beaconName.delegate = self;
-    cell.message.tag = indexPath.row;
-    [cell.message addTarget:self action:@selector(addMessage:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else if (indexPath.section == 1) {
     
-    PFObject *beacon = _beacons[indexPath.row];
-    
-    NSNumber *major = beacon[@"major"];
-    NSNumber *minor = beacon[@"minor"];
-    NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
-    cell.detailTextLabel.text = temp;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
-    cell.count.text = [NSString stringWithFormat:@"(%@)", beacon[@"messageCount"] ? beacon[@"messageCount"] : @(0)];
-    
-    if (beacon.objectId) {
+        cell.message.hidden = NO;
+        cell.count.hidden = NO;
+        cell.beaconName.hidden = NO;
+        cell.beaconName.tag = indexPath.row;
+        cell.beaconName.delegate = self;
+        cell.message.tag = indexPath.row;
+        [cell.message addTarget:self action:@selector(addMessage:) forControlEvents:UIControlEventTouchUpInside];
         
-        [beacon fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        if (NSLocationInRange(indexPath.row, NSMakeRange(0, _beacons.count))) {
             
-            if (object[@"name"])
-                cell.beaconName.text = object[@"name"];// ? object[@"name"] : @"Name this beacon";
-            else
-                cell.beaconName.placeholder = @"Name this beacon";
-        }];
+            PFObject *beacon = _beacons[indexPath.row];
+            
+            if (beacon[@"isUserDevice"]) {
+                
+                cell.count.text = [NSString stringWithFormat:@"(%@)", beacon[@"messageCount"] ? beacon[@"messageCount"] : @(0)];
+                
+                cell.beaconName.text = [[UIDevice currentDevice] name];
+                cell.detailTextLabel.text = @"iOS Device";
+            }
+            else {
+                
+                NSNumber *major = beacon[@"major"];
+                NSNumber *minor = beacon[@"minor"];
+                NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
+                cell.detailTextLabel.text = temp;
+                
+                cell.count.text = [NSString stringWithFormat:@"(%@)", beacon[@"messageCount"] ? beacon[@"messageCount"] : @(0)];
+                
+                if (beacon.objectId) {
+                    
+                    [beacon fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                        
+                        if (object[@"name"])
+                            cell.beaconName.text = object[@"name"];// ? object[@"name"] : @"Name this beacon";
+                        else
+                            cell.beaconName.placeholder = @"Name this beacon";
+                    }];
+                }
+                else {
+                    
+                    cell.beaconName.placeholder = @"Name this beacon";
+                }
+                
+                cell.textLabel.text = @"";
+            }
+        }
     }
     else {
         
-        cell.beaconName.placeholder = @"Name this beacon";
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        
+        cell.beaconName.hidden = YES;
+        cell.message.hidden = YES;
+        cell.count.hidden = YES;
+        cell.textLabel.text = @"Delete Group";
+        cell.textLabel.textColor = [UIColor redColor];
+        
     }
-    
-  
 
 
     return cell;
@@ -238,6 +333,14 @@
         // Delete the row from the data source
         [tableView deleteRowsAtIndexPaths:@[indexPath]
                          withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 2) {
+        
+        [self deleteGroup];
     }
 }
 

@@ -10,6 +10,10 @@
 
 #import "MessageCell.h"
 
+static NSString *kTextCell = @"TextCell";
+static NSString *kPhotoCell = @"PhotoCell";
+
+
 @interface AddMessageViewController () {
     
     UITextView *activeView;
@@ -18,6 +22,7 @@
 @property (nonatomic, strong) NSMutableArray *messages;
 @property (nonatomic, assign) NSInteger messageCount;
 @property (nonatomic, strong) NSMutableArray *textViews;
+@property (nonatomic, strong) NSMutableArray *images;
 
 @end
 
@@ -47,6 +52,8 @@
     
     UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:@"What data type?" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Text", @"Image", nil];
     
+    action.tag = 1;
+    
     [action showInView:self.view];
 }
 
@@ -57,19 +64,78 @@
     
     [_messages addObject:message];
     [_textViews addObject:[NSNull null]];
+    [_images addObject:[NSNull null]];
     
     [_tableView insertSections:[NSIndexSet indexSetWithIndex:_messages.count - 1] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    PFObject *message = [[PFObject alloc] initWithClassName:@"Message"];
+    message[@"type"] = @"image";
+    
+    
+    
+    UIImage *image = (UIImage*) [info objectForKey:UIImagePickerControllerOriginalImage];
+    
+    NSData *imageData =  UIImageJPEGRepresentation(image, 0.6);
+    
+    
+    PFFile *file = [PFFile fileWithData:imageData];
+    message[@"imageFile"] = file;
+    
+    [_messages addObject:message];
+    [_textViews addObject:[NSNull null]];
+    [_images addObject:image];
+    
+    [_tableView insertSections:[NSIndexSet indexSetWithIndex:_messages.count - 1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)showImagePickerWithSourceType:(UIImagePickerControllerSourceType)sourceType {
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = sourceType;
+    picker.allowsEditing = YES;
+    
+    [self presentViewController:picker animated:YES completion:nil];
+    
+}
+
+- (void)addImageContent {
+    
+    UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Take Photo", @"Add Existing", nil];
+    action.tag = 2;
+    
+    [action showInView:self.view];
+}
+
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    if (buttonIndex == 0) {
+    if (actionSheet.tag == 1) {
         
-        [self addTextContent];
+        if (buttonIndex == 0) {
+            
+            [self addTextContent];
+        }
+        else if (buttonIndex == 1) {
+            
+            [self addImageContent];
+        }
     }
-    else if (buttonIndex == 1) {
+    else if (actionSheet.tag == 2) {
         
-        
+        if (buttonIndex == 0) {
+            
+            [self showImagePickerWithSourceType:UIImagePickerControllerSourceTypeCamera];
+        }
+        else if (buttonIndex == 1) {
+            
+            [self showImagePickerWithSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+        }
+
     }
 }
 
@@ -109,12 +175,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [_tableView registerClass:[MessageCell class] forCellReuseIdentifier:@"CellID"];
+    [_tableView registerClass:[MessageCell class] forCellReuseIdentifier:kTextCell];
+    [_tableView registerClass:[MessageCell class] forCellReuseIdentifier:kPhotoCell];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addMessage)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(dismissView)];
     
     _textViews = [[NSMutableArray alloc] init];
+    _images = [[NSMutableArray alloc] init];
     
     NSArray *currentMessages = [[BeaconManager sharedManager] currentMessages][[NSString stringWithFormat:@"%@%@", _beaconObj[@"minor"], _beaconObj[@"major"]]];
 
@@ -145,6 +213,7 @@
     for (int i = 0; i < _messages.count; i ++) {
         
         [_textViews addObject:[NSNull null]];
+        [_images addObject:[NSNull null]];
     }
 }
 
@@ -164,6 +233,10 @@
         
         return 150;
     }
+    else if (obj[@"type"] && [obj[@"type"] isEqualToString:@"image"]) {
+        
+        return 70;
+    }
     
     return 44;
 }
@@ -182,12 +255,39 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CellID" forIndexPath:indexPath];
+    NSString *cellID = kTextCell;
+    
+    PFObject *message = _messages[indexPath.section];
+    
+    if (message[@"type"] && [message[@"type"] isEqualToString:@"image"]) {
+        
+        cellID = kPhotoCell;
+    }
+    
+    MessageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
 
-    cell.message.delegate = self;
-    cell.message.tag = indexPath.section;
-    cell.message.text = _messages[indexPath.section][@"body"];
-
+    if ([cellID isEqualToString:kTextCell]) {
+        
+        cell.message.delegate = self;
+        cell.message.tag = indexPath.section;
+        cell.message.text = message[@"body"];
+    }
+    else {
+        
+        if ([_images[indexPath.section] isKindOfClass:[UIImage class]]) {
+            
+            cell.imageThumb.image = _images[indexPath.section];
+        }
+        else {
+            PFFile *theImage = message[@"imageFile"];
+            [theImage getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+                
+                UIImage *image = [UIImage imageWithData:data];
+                cell.imageThumb.image = image;
+            }];
+        }
+        
+    }
     
     return cell;
 }
@@ -195,8 +295,13 @@
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(MessageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (NSLocationInRange(indexPath.section, NSMakeRange(0, _messages.count))) {
+        
         PFObject *obj = _messages[indexPath.section];
-        obj[@"body"] = cell.message.text;
+        
+        if (obj[@"type"] && [obj[@"type"] isEqualToString:@"text"]) {
+            
+            obj[@"body"] = cell.message.text;
+        }
     }
 }
 

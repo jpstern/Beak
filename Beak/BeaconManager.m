@@ -63,6 +63,11 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     }];
 }
 
+- (void)useDeviceAsBeacon {
+    
+    [_beaconManager startAdvertisingWithProximityUUID:ESTIMOTE_PROXIMITY_UUID major:9090 minor:0101 identifier:@"device"];
+}
+
 - (void)saveDummyBeaconForGroup:(PFObject*)group {
     
     PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
@@ -365,6 +370,13 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
         
     }];
     
+}
+
+- (void)getExistingMessagesForUser:(void (^)(NSArray *, NSError *))block {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"UserMessage" predicate:[NSPredicate predicateWithFormat:@"user == %@", [PFUser currentUser]]];
+    
+    [query findObjectsInBackgroundWithBlock:block];
 }
 
 #pragma mark ESTBeaconManager Delegate

@@ -21,17 +21,14 @@
 
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
+@property (nonatomic, strong) NSArray *messages;
+
 @end
 
 @implementation HomeViewController
 
 - (void)showProfile {
-    
-//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-//    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"profileNavigationController"];
-//    [self presentViewController:controller animated:YES completion:nil];
-    
-    
+
     [PFFacebookUtils logInWithPermissions:@[@"email"] block:^(PFUser *user, NSError *error) {
 
         if (!user) {
@@ -51,15 +48,22 @@
     
 }
 
+- (void)openRight {
+    
+    [self.viewDeckController openRightViewAnimated:YES];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     [[BeaconManager sharedManager] setDelegate:self];
     
     _imageView.hidden = YES;
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
     
     //if new user with no groups created/subscribed
     
@@ -76,13 +80,19 @@
     [self.view addSubview:manageGroupButton];
     
     
-    
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"side"] style:UIBarButtonItemStylePlain target:self action:@selector(openRight)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
 
+    [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
+        
+        NSLog(@"%@", messages);
+        
+    }];
     
 }
 

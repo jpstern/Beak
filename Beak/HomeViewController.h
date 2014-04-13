@@ -17,7 +17,7 @@
 @property (nonatomic, strong) IBOutlet UIImageView *imageView;
 
 - (void)switchToggled:(UISwitch*)toggle;
-- (IBAction)createGroup:(id)sender;
-- (IBAction)manageGroup:(id)sender;
+//- (void)createGroup;
+//- (void)manageGroup;
 
 @end

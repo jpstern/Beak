@@ -35,6 +35,8 @@
 
 - (void)saveDummyObject;
 
+- (void)useDeviceAsBeacon;
+
 - (void)subscribeToGroup:(PFObject *)groupObj WithCompletion:(void (^)(PFObject *subscription))block;
 
 - (void)getUserOwnedGroups:(void (^)(NSArray *groups, NSError *error))block;
@@ -56,6 +58,8 @@
 - (void)searchForNearbyBeacons:(void (^)(NSArray *estBeacons, NSArray *parseBeacons, NSError *error))block;
 //- (void)searchForNearbyBeacons:(void (^)(NSArray *beacons, NSError *error))block;
 - (void)stopSearchingForBeacons;
+
+- (void)getExistingMessagesForUser:(void (^)(NSArray *messages, NSError *error))block;
 
 /**
  

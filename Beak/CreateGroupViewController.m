@@ -12,6 +12,9 @@
 
 @interface CreateGroupViewController ()
 
+@property (nonatomic, assign) BOOL shouldUseThisDevice;
+@property (strong, nonatomic) NSArray *beaconsList;
+@property (strong, nonatomic) NSSet *usedBeaconIds;
 @property (nonatomic, strong) NSMutableSet *selectedBeacons;
 @end
 
@@ -69,31 +72,20 @@
  
     [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *estBeacons, NSArray *parseBeacons, NSError *error) {
         
-        estBeacons = [estBeacons filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"NOT (SELF.proximityUUID.UUIDString IN %@)", [parseBeacons valueForKey:@"proximityUUID"]]];
+//        estBeacons = [estBeacons filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"NOT (SELF.proximityUUID.UUIDString IN %@)", [parseBeacons valueForKey:@"proximityUUID"]]];
        
         NSSet *set = [NSSet setWithArray:[_beaconsList valueForKey:@"proximityUUID"]];
         NSSet *set1 = [NSSet setWithArray:[estBeacons valueForKey:@"proximityUUID"]];
         
         if (![set isEqual:set1]) {
             
+            _usedBeaconIds = [NSSet setWithArray:[parseBeacons valueForKey:@"proximityUUID"]];
             _beaconsList = estBeacons;
             [_tableView reloadData];
             
         }
         
     }];
-    
-//    [[BeaconManager sharedManager] searchForNearbyBeacons:^(NSArray *beacons, NSError *error) {
-//        
-//        NSSet *set = [NSSet setWithArray:[_beaconsList valueForKey:@"proximityUUID"]];
-//        NSSet *set1 = [NSSet setWithArray:[beacons valueForKey:@"proximityUUID"]];
-//        
-//        if (![set isEqual:set1]) {
-//            
-//            _beaconsList = beacons;
-//            [_tableView reloadData];
-//        }
-//    }];
 
 }
 
@@ -113,13 +105,9 @@
     
     EditGroupViewController *editGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"editGroupViewController"];
     editGroup.group = group;
+    editGroup.useDevice = _shouldUseThisDevice;
     [self.navigationController pushViewController:editGroup animated:YES];
 }
-
-/*- (IBAction)quitButtonClicked:(id)sender {
-    NSLog(@"quitclicked");
-    [self dismissViewControllerAnimated:YES completion:nil];
-}*/
 
 - (void)goToSave{
     
@@ -130,18 +118,6 @@
         [alert show];
         //[alert release];
     }
-    
-    //self.enterGroupName
-    //if(groupNameInput.text.length>0)
-    //{
-     
-     //   [[[BeaconManager sharedManager]saveNewGroup:<#(NSDictionary *)#> withBeacons:<#(NSArray *)#>]
-     //    {
-             
-            //
-     //    }];
-        //groupName.text=groupNameInput.text;
-    //}
     
 }
 
@@ -179,12 +155,15 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _beaconsList.count;
+    if (section == 0)
+        return _beaconsList.count;
+    else
+        return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -199,46 +178,88 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-//    UISwitch *mySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(130, 235, 0, 0)];
-//    [mySwitch addTarget:self action:@selector(changeSwitch:) forControlEvents:UIControlEventValueChanged];
-//    cell.accessoryView=mySwitch;
-    
-    ESTBeacon *beacon = self.beaconsList[indexPath.row];
-    
-    if ([_selectedBeacons containsObject:beacon]) {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    if (indexPath.section == 0) {
+        
+        ESTBeacon *beacon = self.beaconsList[indexPath.row];
+        
+        BOOL used = NO;
+        
+        if ([_usedBeaconIds containsObject:beacon.proximityUUID.UUIDString]) {
+            
+            used = YES;
+            
+            cell.textLabel.enabled = NO;
+            cell.detailTextLabel.enabled = NO;
+            
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        }
+        else {
+            
+            cell.textLabel.enabled = YES;
+            cell.detailTextLabel.enabled = YES;
+        }
+        
+        if ([_selectedBeacons containsObject:beacon]) {
+            
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        else {
+            
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+        
+        cell.accessoryView = nil;
+        
+        cell.textLabel.text = [NSString stringWithFormat:@"Beacon %ld %@", indexPath.row + 1, used ? @"- Already Used" : @""];
+
+        NSNumber *major = beacon.major;
+        NSNumber *minor = beacon.minor;
+        NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
+        cell.detailTextLabel.text = temp;
     }
-    
-    cell.textLabel.text = [NSString stringWithFormat:@"Beacon %ld", indexPath.row + 1];//beacon.proximityUUID.UUIDString;
-    NSNumber *major = beacon.major;
-    NSNumber *minor = beacon.minor;
-    NSString *temp = [NSString stringWithFormat:@"Major: %@ Minor: %@", major, minor];
-    cell.detailTextLabel.text = temp;
-    
+    else {
+        
+        UISwitch *mySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+        [mySwitch addTarget:self action:@selector(useDeviceToggled:) forControlEvents:UIControlEventValueChanged];
+        [mySwitch setOn:_shouldUseThisDevice];
+        cell.accessoryView = mySwitch;
+        
+        cell.textLabel.text = @"Use this device as a beacon";
+        cell.detailTextLabel.text = @"";
+    }
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (![_selectedBeacons containsObject:_beaconsList[indexPath.row]]) {
-        [_selectedBeacons addObject:_beaconsList[indexPath.row]];
+    ESTBeacon *beacon = _beaconsList[indexPath.row];
+    
+    if (![_usedBeaconIds containsObject:beacon.proximityUUID.UUIDString]) {
+        
+        if (![_selectedBeacons containsObject:beacon]) {
+            
+            [_selectedBeacons addObject:beacon];
+        }
+        else {
+            
+            [_selectedBeacons removeObject:beacon];
+        }
+        
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    }
+}
+
+- (void)useDeviceToggled:(UISwitch*)sw {
+    
+    if (sw.isOn) {
+        
+        _shouldUseThisDevice = YES;
     }
     else {
         
-        [_selectedBeacons removeObject:_beaconsList[indexPath.row]];
+        _shouldUseThisDevice = NO;
     }
-    
-    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
-- (void)changeSwitch:(id)sender{
-    if([sender isOn]){
-        // Execute any code when the switch is ON
-        NSLog(@"Switch is ON");
-    } else{
-        // Execute any code when the switch is OFF
-        NSLog(@"Switch is OFF");
-    }
-}
 @end

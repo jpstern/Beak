@@ -11,5 +11,7 @@
 @interface MessageCell : UITableViewCell
 
 @property (nonatomic, strong) UITextView *message;
+@property (nonatomic, strong) UIImageView *imageThumb;
+
 
 @end
