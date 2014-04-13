@@ -362,7 +362,6 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
                     
                     [_delegate didReceiveEnteredRegionMessage:message];
                     
-                    
                 }
                 
             }];
@@ -372,7 +371,6 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
             
             NSLog(@"%@", error);
         }
-        
         
     }];
     
@@ -417,7 +415,6 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
         _currentRegion = region;
         
         [self getInformationForEnteredRegion:region];
-        
         
     }
     else {
