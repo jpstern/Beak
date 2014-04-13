@@ -45,9 +45,11 @@
 - (void)getGroupsForNearbyBeacons:(NSArray *)beaconIds WithCompletion:(void (^)(NSArray *beacons))block;
 
 - (void)getAvailableGroupsWithBlock:(void(^)(NSArray *groups, NSError *error))block;
-- (void)monitorBeaconsForGroup:(NSString *)groupId;
+- (void)monitorBeaconsForGroup:(PFObject *)groupObj;
 
 - (void)getBeaconsForGroup:(PFObject*)group andCompletion:(void (^)(NSArray *beacons, NSError *error))block;
+
+- (void)getWelcomeMessageForGroup:(PFObject *)groupObj andCompletion:(void (^)(PFObject *message, NSError *error))block;
 
 - (void)searchForNearbyGroups:(void (^)(NSArray *parseBeacons, NSError *error))block;
 /**

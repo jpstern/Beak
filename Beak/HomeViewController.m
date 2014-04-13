@@ -8,6 +8,8 @@
 
 #import "HomeViewController.h"
 #import "BeaconTableDelegate.h"
+#import "CreateGroupViewController.h"
+#import "ManageGroupsViewController.h"
 
 @interface HomeViewController () <ESTBeaconManagerDelegate> {
     
@@ -16,11 +18,8 @@
 
 @property (nonatomic, strong) BeaconManager *beaconManager;
 @property (nonatomic, strong) BeaconTableDelegate *tableDelegate;
-
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
-
 @property (nonatomic, strong) NSArray *messages;
-
 @end
 
 @implementation HomeViewController
@@ -48,12 +47,17 @@
 
 - (void)openRight {
     
-    [self.viewDeckController openRightViewAnimated:YES];
+    [self.viewDeckController toggleRightViewAnimated:YES];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
+                                        init];
+    [refreshControl addTarget:self action:@selector(callRefresh) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refreshControl;
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -63,19 +67,14 @@
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
     
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"side"] style:UIBarButtonItemStylePlain target:self action:@selector(openRight)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-
-    [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
-        
-        NSLog(@"%@", messages);
-        
-    }];
-    
+    [self callRefresh];
 }
 
 - (void)didReceiveMemoryWarning
@@ -84,40 +83,56 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)switchToggled:(UISwitch*)toggle {
-
-    PFObject *group = _tableDelegate.groups[toggle.tag];
-    
-    [[BeaconManager sharedManager] monitorBeaconsForGroup:group.objectId];
-}
-
 - (void)didEnterRegion {
     
-    if (!contentShown) {
-        
-        self.title = @"Loading Content!";
-        _textView.text = @"";
-        
-        _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        _indicator.center = CGPointMake(160, self.view.frame.size.height / 2);
-        [self.view addSubview:_indicator];
-        
-        [_indicator startAnimating];
-    }
+    NSLog(@"entered region");
 }
 
 - (void)didReceiveEnteredRegionMessage:(PFObject *)message {
     
-    [_indicator removeFromSuperview];
-    _indicator = nil;
+    NSLog(@"%@", message);
     
-    self.title = message[@"title"];
-    _textView.text = message[@"body"];
-    NSLog(@"%@", _textView.text);
-    
-    contentShown = YES;
-    _imageView.hidden = NO;
-    
+}
+
+-(void)createGroup
+{
+    NSLog(@"goToCG!");
+    CreateGroupViewController *createGroup = [self.storyboard instantiateViewControllerWithIdentifier:@"createViewController"];
+    [self.navigationController pushViewController:createGroup animated:YES];
+}
+
+-(void)manageGroup
+{
+    NSLog(@"goToMG!");
+    ManageGroupsViewController *manageGroup =[self.storyboard instantiateViewControllerWithIdentifier:@"manageViewController"];
+    [self.navigationController pushViewController:manageGroup animated:YES];
+}
+
+-(void)callRefresh
+{
+    [self.refreshControl beginRefreshing];
+    [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
+        
+        //if there are no messages show create and manage button
+        if(messages.count==0)
+        {
+            UIButton *createGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [createGroupButton addTarget:self action:@selector(createGroup) forControlEvents:UIControlEventTouchUpInside];
+            [createGroupButton setTitle:@"Create a Group" forState:UIControlStateNormal];
+            createGroupButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+            [self.view addSubview:createGroupButton];
+            
+            UIButton *manageGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [manageGroupButton addTarget:self action:@selector(manageGroup) forControlEvents:UIControlEventTouchUpInside];
+            [manageGroupButton setTitle:@"Manage Group" forState:UIControlStateNormal];
+            manageGroupButton.frame = CGRectMake(80.0, 250.0, 160.0, 40.0);
+            [self.view addSubview:manageGroupButton];
+            
+        }
+        NSLog(@"%@", messages);
+        [self.refreshControl endRefreshing];
+    }];
+
 }
 
 @end

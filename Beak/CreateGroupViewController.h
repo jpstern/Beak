@@ -10,20 +10,7 @@
 #import "BeaconManager.h"
 
 @interface CreateGroupViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
-//{
-    //IBOutlet UITextField *groupNameInput;
-    //IBOutlet UIBarButtonItem *saveButton;
-    //IBOutlet UILabel *groupName;
-    //NSMutableArray *beaconsList;
-//}
-//@property(strong,nonatomic) UITextField *groupNameInput;
-//@property(strong,nonatomic) UIBarButtonItem *saveButton;
-//@property (strong, nonatomic) IBOutlet UITableView *beaconTableView;
-
-//- (IBAction)quitButtonClicked:(id)sender;
-//- (IBAction)goToSave:(id)sender;
 @property(strong,nonatomic) UITextField *enterGroupName;
-
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 
 
