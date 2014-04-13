@@ -18,11 +18,8 @@
 
 @property (nonatomic, strong) BeaconManager *beaconManager;
 @property (nonatomic, strong) BeaconTableDelegate *tableDelegate;
-
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
-
 @property (nonatomic, strong) NSArray *messages;
-
 @end
 
 @implementation HomeViewController
@@ -62,7 +59,6 @@
     [refreshControl addTarget:self action:@selector(callRefresh) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
     
-    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     [[BeaconManager sharedManager] setDelegate:self];
@@ -71,7 +67,6 @@
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
     
-    
 
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"side"] style:UIBarButtonItemStylePlain target:self action:@selector(openRight)];
 }
@@ -79,7 +74,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
+    [self callRefresh];
 }
 
 - (void)didReceiveMemoryWarning
@@ -91,7 +86,6 @@
 - (void)switchToggled:(UISwitch*)toggle {
 
     PFObject *group = _tableDelegate.groups[toggle.tag];
-    
     [[BeaconManager sharedManager] monitorBeaconsForGroup:group.objectId];
 }
 
