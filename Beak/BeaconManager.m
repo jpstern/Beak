@@ -45,6 +45,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
         self.beaconManager.avoidUnknownStateBeacons = YES;
         
         _currentMessages = [[NSMutableDictionary alloc] init];
+        _monitoredRegions = [[NSMutableDictionary alloc] init];
         
     }
     
@@ -206,7 +207,17 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
                     [self.beaconManager startMonitoringForRegion:region];
                     [self.beaconManager requestStateForRegion:region];
 
+                    NSMutableArray *arr = _monitoredRegions[groupObj.objectId];
                     
+                    if (arr) {
+                        
+                        [arr addObject:region];
+                    }
+                    else {
+                        
+                        _monitoredRegions[groupObj.objectId] = [[NSMutableArray alloc] initWithObjects:region, nil];
+                    }
+
                 }
                 
             }
@@ -214,6 +225,16 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
         
     }];
     
+}
+
+- (void)stopMonitoringRegionsForGroupId:(NSString *)groupId {
+    
+    NSArray *regions = _monitoredRegions[groupId];
+    
+    for (ESTBeaconRegion *region in regions) {
+        
+        [self.beaconManager stopMonitoringForRegion:region];
+    }
 }
 
 - (void)stopSearchingForBeacons {
@@ -382,6 +403,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     
     userMessage[@"user"] = [PFUser currentUser];
     userMessage[@"message"] = message;
+    userMessage[@"group"] = message[@"group"];
     
     [userMessage saveInBackground];
 }

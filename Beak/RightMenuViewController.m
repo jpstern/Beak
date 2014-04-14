@@ -45,12 +45,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return self.view.frame.size.height / 3;
+    return self.view.frame.size.height / 2;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 3;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -65,12 +65,12 @@
     }
     else if (indexPath.row == 1) {
         
-        cell.title.text = @"Manage Groups";
+        cell.title.text = @"Join or Manage Groups";
     }
-    else {
-        
-        cell.title.text = @"History";
-    }
+//    else {
+//        
+//        cell.title.text = @"History";
+//    }
     
     return cell;
 }

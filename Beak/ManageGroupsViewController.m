@@ -43,6 +43,8 @@
     
     self.title = @"Manage Groups";
     
+    [self.viewDeckController setPanningMode:IIViewDeckNoPanning];
+    
 //    [[BeaconManager sharedManager] getAvailableGroupsWithBlock:^(NSArray *groups, NSError *error) {
 //        
 //        _groups = groups;
@@ -204,6 +206,19 @@
         NSMutableArray *temp2 = [_nearby mutableCopy];
         [temp2 removeObjectAtIndex:indexPath.row];
         _nearby = temp2;
+        
+        if (_subscriptions.count != 0) {
+            
+            NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+            [def setBool:YES forKey:@"subscribedToGroups"];
+            [def synchronize];
+        }
+        else {
+            
+            NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+            [def setBool:NO forKey:@"subscribedToGroups"];
+            [def synchronize];
+        }
         
         [self.tableView reloadData];
         
@@ -402,11 +417,15 @@
     
     PFObject *subscription = _subscriptions[indexPath.row];
     
+    [[BeaconManager sharedManager] stopMonitoringRegionsForGroupId:[subscription[@"group"] objectId]];
+    
     [subscription deleteInBackground];
     
     NSMutableArray *temp = [_subscriptions mutableCopy];
     [temp removeObjectAtIndex:indexPath.row];
     _subscriptions = temp;
+    
+    
     
 //    if (_subscriptions.count == 0) {
 //        

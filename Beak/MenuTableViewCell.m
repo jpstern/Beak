@@ -16,7 +16,7 @@
     if (self) {
         // Initialization code
         
-        _title = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 60)];
+        _title = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
         _title.textAlignment = NSTextAlignmentCenter;
         _title.numberOfLines = 0;
         _title.textColor = [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1];
