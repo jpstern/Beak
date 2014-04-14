@@ -24,11 +24,8 @@
 @property (nonatomic, strong) BeaconManager *beaconManager;
 @property (nonatomic, strong) BeaconTableDelegate *tableDelegate;
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
-<<<<<<< HEAD
-@property (nonatomic, strong) NSArray *takeMessages;
-=======
+
 @property (nonatomic, strong) NSArray *messages;
->>>>>>> 4cdb23ff7b1436a339b5c7601c2e95a32d1987a5
 
 @end
 
@@ -233,7 +230,6 @@
     [self.refreshControl beginRefreshing];
     
     [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
-        self.takeMessages=messages;
         
         _messages = messages;
         
@@ -248,15 +244,6 @@
             [_noGroupsView removeFromSuperview];
             [self.tableView reloadData];
         }
-<<<<<<< HEAD
-        else
-        {
-            [self.tableView reloadData];
-        }
-        NSLog(@"%@", messages);
-=======
-        
->>>>>>> 4cdb23ff7b1436a339b5c7601c2e95a32d1987a5
         [self.refreshControl endRefreshing];
     }];
 
@@ -277,16 +264,13 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSLog(@"Messages count %ld",self.takeMessages.count);
-    return self.takeMessages.count;
+    NSLog(@"Messages count %ld",self.messages.count);
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section == 0)
-        return 1;
-    else
-        return 1;
+    return _messages.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
