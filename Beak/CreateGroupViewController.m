@@ -130,7 +130,7 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
     if (section == 0) {
         
-        label.text = @"NEARBY BEACONS";
+        label.text = @"SELECT YOUR BEACONS";
     }
 
     label.textColor = [UIColor colorWithRed:0.427451 green:0.427451 blue:0.447059 alpha:1];

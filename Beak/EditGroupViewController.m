@@ -54,6 +54,7 @@
         mess[@"body"] = joinMessage.text;
         mess[@"isJoinMessage"] = @(YES);
         mess[@"group"] = _group;
+        mess[@"type"] = @"text";
         [mess saveInBackground];
         
     }
@@ -357,6 +358,13 @@
 
 
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 0 || indexPath.section == 2) return NO;
+    
+    return YES;
 }
 
 // Override to support editing the table view.

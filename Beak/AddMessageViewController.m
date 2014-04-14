@@ -78,7 +78,7 @@ static NSString *kPhotoCell = @"PhotoCell";
     
     UIImage *image = (UIImage*) [info objectForKey:UIImagePickerControllerOriginalImage];
     
-    NSData *imageData =  UIImageJPEGRepresentation(image, 0.6);
+    NSData *imageData =  UIImageJPEGRepresentation(image, 0.5);
     
     
     PFFile *file = [PFFile fileWithData:imageData];

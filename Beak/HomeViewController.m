@@ -11,6 +11,8 @@
 #import "CreateGroupViewController.h"
 #import "ManageGroupsViewController.h"
 
+#import "HomeCell.h"
+
 @interface HomeViewController () <ESTBeaconManagerDelegate> {
     
     BOOL contentShown;
@@ -26,6 +28,8 @@
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
 @property (nonatomic, strong) NSArray *messages;
+
+@property (nonatomic, strong) NSMutableDictionary *textSizeMap;
 
 @end
 
@@ -106,7 +110,7 @@
     if (!_noContent) {
         
         _noContent = [[UILabel alloc] initWithFrame:CGRectMake(10, 120, 300, 60)];
-        _noContent.text = @"Nothing to see here yet";
+        _noContent.text = @"Nothing to see here!";
         _noContent.numberOfLines = 0;
         _noContent.textAlignment = NSTextAlignmentCenter;
         _noContent.textColor = [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1];
@@ -133,6 +137,8 @@
     
     self.title = @"Beak";
     
+    _textSizeMap = [[NSMutableDictionary alloc] init];
+    
 //    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"side"] style:UIBarButtonItemStylePlain target:self action:@selector(openRight)];
 }
@@ -152,6 +158,14 @@
     else {
         
         [[BeaconManager sharedManager] getUserSubscribedGroups:^(NSArray *groups, NSError *error) {
+            
+            if (groups.count == 0) {
+                
+                [def setBool:NO forKey:@"subscribedToGroups"];
+                
+                [_noContent removeFromSuperview];
+                [self.view addSubview:[self noGroupsView]];
+            }
             
             for (PFObject *sub in groups) {
             
@@ -208,7 +222,7 @@
 - (void)didReceiveEnteredRegionMessage:(PFObject *)message {
     
     NSLog(@"%@", message);
-    
+    [self callRefresh];
 }
 
 -(void)createGroup
@@ -225,6 +239,32 @@
     [self.navigationController pushViewController:manageGroup animated:YES];
 }
 
+- (void)processMessages {
+    
+//    NSMutableArray *groups = [[NSMutableArray alloc] init];
+    
+    NSMutableDictionary *groups = [[NSMutableDictionary alloc] init];
+    
+    for (PFObject *userMessage in _messages) {
+        
+        if (groups[[userMessage[@"group"] objectId]]) {
+            
+            NSMutableArray *arr = groups[[userMessage[@"group"] objectId]];
+            
+            [arr addObject:userMessage];
+        }
+        else {
+            
+            NSMutableArray *arr = [[NSMutableArray alloc] initWithObjects:userMessage, nil];
+            groups[[userMessage[@"group"] objectId]] = arr;
+        }
+    }
+    
+    _messages = [groups allValues];
+    
+    
+}
+
 -(void)callRefresh
 {
     //UIView *refreshView =[UIView alloc];
@@ -234,6 +274,8 @@
         
         _messages = messages;
         
+        [self processMessages];
+        
         //if there are no messages show create and manage button
         if(messages.count==0) {
 
@@ -242,38 +284,63 @@
         }
         else {
             
+            [_noContent removeFromSuperview];
             [_noGroupsView removeFromSuperview];
-            [self.tableView reloadData];
-            //[refreshView dealloc];
         }
+        
+        [self.tableView reloadData];
         [self.refreshControl endRefreshing];
     }];
     //return refreshView;
 }
 
-//
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    
-//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-//    
-//    return view;
-//}
-//
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-//    
-//    return 44;
-//}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+    view.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 320, 44)];
+    lab.textColor = [UIColor darkTextColor];
+    lab.font = [UIFont fontWithName:@"HelveticaNeue" size:18];
+    [view addSubview:lab];
+    
+    PFObject *userMessage = _messages[section][0];
+    
+    [userMessage[@"group"] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+       
+        lab.text = [NSString stringWithFormat:@"Messages from %@", object[@"name"]];
+    }];
+    
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    return 44;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    PFObject *message = _messages[indexPath.section][indexPath.row];
+    
+    if ([message[@"type"] isEqualToString:@"text"]) {
+        
+        return _textSizeMap[message.objectId] ? MAX(44, [_textSizeMap[message.objectId] floatValue]+ 5) : 44;
+    }
+    
+    return 320;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSLog(@"Messages count %ld",self.messages.count);
 
-    return 1;
+    return _messages.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _messages.count;
+    return [_messages[section] count];
 
 }
 
@@ -282,22 +349,61 @@
     
     static NSString *CellIdentifier = @"CellID";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    HomeCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (!cell) {
         
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[HomeCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-    if(_messages.count>0)
-    {
-        PFObject *temp =self.messages[indexPath.row];
-        [temp[@"message"] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error){
-            cell.textLabel.text =object[@"body"];
+    
+    PFObject *userMessage = self.messages[indexPath.section][indexPath.row];
+    
+    if ([userMessage[@"type"] isEqualToString:@"text"]) {
+        
+        [userMessage[@"message"] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error){
+            
+            NSString *text = object[@"body"];
+//            
+            CGSize size = [text sizeWithFont:cell.body.font constrainedToSize:CGSizeMake(300, 9999)];
+//            CGRect rect = [text boundingRectWithSize:CGSizeMake(300, 999) options:NSStringDrawingUsesDeviceMetrics attributes:@{NSFontAttributeName: cell.body.font} context:nil];
+            
+            NSNumber *curHeight = _textSizeMap[userMessage.objectId];
+            
+            if (![curHeight isEqual:@(size.height)]) {
+                _textSizeMap[userMessage.objectId] = @(size.height);
+                [tableView reloadData];
+            }
+            
+            CGRect frame = cell.body.frame;
+            frame.size.height = MAX(44, size.height);
+            cell.body.frame = frame;
+            
+            cell.body.text = object[@"body"];
+            
+//            PFObject *group = userMessage[@"group"];
+//            [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+//                
+//                cell.title.text = [NSString stringWithFormat:@"%@ has something for you!", object[@"name"]];
+//            }];
+            
+            
         }];
-    
     }
-    
-    
+    else {
+        
+        [userMessage[@"message"] fetchIfNeededInBackgroundWithBlock:^(PFObject *message, NSError *error){
+            
+            PFFile *theImage = message[@"imageFile"];
+            [theImage getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+                
+                UIImage *image = [UIImage imageWithData:data];
+                cell.messageImage.image = image;
+            }];
+        }];
+
+        
+    }
+
     
     return cell;
 }
@@ -305,11 +411,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    return 44;
 }
 
 

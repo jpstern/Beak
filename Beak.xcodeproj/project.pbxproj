@@ -29,6 +29,7 @@
 		80C3E94918D926D30096D787 /* ManageGroupsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C3E94818D926D30096D787 /* ManageGroupsViewController.m */; };
 		80CE592F18F3666400DE5EB5 /* AddMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CE592E18F3666400DE5EB5 /* AddMessageViewController.m */; };
 		80CE593218F3786D00DE5EB5 /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CE593118F3786D00DE5EB5 /* MessageCell.m */; };
+		80CE599D18FBA55F00DE5EB5 /* HomeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CE599C18FBA55F00DE5EB5 /* HomeCell.m */; };
 		80EA82D018DA20CA00981338 /* lion-03.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 80EA82CF18DA20CA00981338 /* lion-03.jpg */; };
 		80EA833B18EA593000981338 /* ManageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA833A18EA593000981338 /* ManageCell.m */; };
 		80EA834E18EB50AF00981338 /* MyViewDeckViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA834D18EB50AF00981338 /* MyViewDeckViewController.m */; };
@@ -87,6 +88,8 @@
 		80CE592E18F3666400DE5EB5 /* AddMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddMessageViewController.m; sourceTree = "<group>"; };
 		80CE593018F3786D00DE5EB5 /* MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCell.h; sourceTree = "<group>"; };
 		80CE593118F3786D00DE5EB5 /* MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageCell.m; sourceTree = "<group>"; };
+		80CE599B18FBA55F00DE5EB5 /* HomeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeCell.h; sourceTree = "<group>"; };
+		80CE599C18FBA55F00DE5EB5 /* HomeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeCell.m; sourceTree = "<group>"; };
 		80EA82CF18DA20CA00981338 /* lion-03.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "lion-03.jpg"; sourceTree = "<group>"; };
 		80EA833918EA593000981338 /* ManageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageCell.h; sourceTree = "<group>"; };
 		80EA833A18EA593000981338 /* ManageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageCell.m; sourceTree = "<group>"; };
@@ -203,6 +206,8 @@
 				80EA833A18EA593000981338 /* ManageCell.m */,
 				808604C218CD309F00ABA33B /* HomeViewController.h */,
 				808604C318CD309F00ABA33B /* HomeViewController.m */,
+				80CE599B18FBA55F00DE5EB5 /* HomeCell.h */,
+				80CE599C18FBA55F00DE5EB5 /* HomeCell.m */,
 				800BA1E518CE98E00031E651 /* BeaconTableDelegate.h */,
 				800BA1E618CE98E00031E651 /* BeaconTableDelegate.m */,
 				80EA834C18EB50AF00981338 /* MyViewDeckViewController.h */,
@@ -419,6 +424,7 @@
 				808604BA18CD309F00ABA33B /* main.m in Sources */,
 				80EA835418EB571100981338 /* MenuTableViewCell.m in Sources */,
 				80EA833B18EA593000981338 /* ManageCell.m in Sources */,
+				80CE599D18FBA55F00DE5EB5 /* HomeCell.m in Sources */,
 				80CE593218F3786D00DE5EB5 /* MessageCell.m in Sources */,
 				80EA838618EE371900981338 /* EditGroupViewController.m in Sources */,
 				80EA838918EE3A7A00981338 /* EditGroupCell.m in Sources */,

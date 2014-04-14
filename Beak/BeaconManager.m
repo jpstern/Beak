@@ -379,10 +379,12 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
                 }
                 else if (objects && objects.count > 0) {
                     
-                    PFObject *message = objects[0];
-                    
-                    [_delegate didReceiveEnteredRegionMessage:message];
-                    
+                    for (PFObject *message in objects) {
+                     
+                        [_delegate didReceiveEnteredRegionMessage:message];
+                        
+                        [self addMessageToUserMessages:message];
+                    }
                 }
                 
             }];
@@ -399,10 +401,11 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
 
 - (void)addMessageToUserMessages:(PFObject *)message {
     
-    PFObject *userMessage = [PFObject objectWithClassName:@"Message"];
+    PFObject *userMessage = [PFObject objectWithClassName:@"UserMessage"];
     
     userMessage[@"user"] = [PFUser currentUser];
     userMessage[@"message"] = message;
+    userMessage[@"type"] = message[@"type"];
     userMessage[@"group"] = message[@"group"];
     
     [userMessage saveInBackground];
