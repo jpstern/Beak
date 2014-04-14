@@ -50,6 +50,8 @@
 //    beaconTableText.text=@"Beacons Available:";
 //    [self.view addSubview:beaconTableText];
     
+    [self.viewDeckController setPanningMode:IIViewDeckNoPanning];
+    
     _selectedBeacons = [[NSMutableSet alloc] init];
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
@@ -79,7 +81,7 @@
         
         if (![set isEqual:set1]) {
             
-            _usedBeaconIds = [NSSet setWithArray:[parseBeacons valueForKey:@"proximityUUID"]];
+            _usedBeaconIds = [NSSet setWithArray:[parseBeacons valueForKey:@"major"]];
             _beaconsList = estBeacons;
             [_tableView reloadData];
             
@@ -184,7 +186,7 @@
         
         BOOL used = NO;
         
-        if ([_usedBeaconIds containsObject:beacon.proximityUUID.UUIDString]) {
+        if ([_usedBeaconIds containsObject:beacon.major]) {
             
             used = YES;
             

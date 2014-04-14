@@ -14,12 +14,21 @@
 @interface HomeViewController () <ESTBeaconManagerDelegate> {
     
     BOOL contentShown;
+    
+    BOOL onceToken;
 }
+
+@property (nonatomic, strong) UIView *noGroupsView;
+@property (nonatomic, strong) UILabel *noContent;
 
 @property (nonatomic, strong) BeaconManager *beaconManager;
 @property (nonatomic, strong) BeaconTableDelegate *tableDelegate;
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
+<<<<<<< HEAD
 @property (nonatomic, strong) NSArray *takeMessages;
+=======
+@property (nonatomic, strong) NSArray *messages;
+>>>>>>> 4cdb23ff7b1436a339b5c7601c2e95a32d1987a5
 
 @end
 
@@ -51,14 +60,73 @@
     [self.viewDeckController toggleRightViewAnimated:YES];
 }
 
+- (UIView *)noGroupsView {
+    
+    [_noGroupsView removeFromSuperview];
+    
+    if (!_noGroupsView) {
+        
+        _noGroupsView = [[UIView alloc] initWithFrame:CGRectMake(0, 80, 320, 248)];
+        
+        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 300, 60)];
+        title.text = @"Looks like you haven't joined a group yet!";
+        title.numberOfLines = 0;
+        title.textAlignment = NSTextAlignmentCenter;
+        title.textColor = [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1];
+        title.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:20];
+        [_noGroupsView addSubview:title];
+        
+        UIButton *join = [UIButton buttonWithType:UIButtonTypeCustom];
+        join.frame = CGRectMake(10, 100, 300, 44);
+        join.backgroundColor = [UIColor lightGrayColor];
+        [join setTitle:@"Join a Group!" forState:UIControlStateNormal];
+        [join addTarget:self action:@selector(manageGroup) forControlEvents:UIControlEventTouchUpInside];
+        [join.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:18]];
+        [_noGroupsView addSubview:join];
+        
+        UILabel *or = [[UILabel alloc] initWithFrame:CGRectMake(10, 164, 300, 20)];
+        or.text = @"Or";
+        or.numberOfLines = 0;
+        or.textAlignment = NSTextAlignmentCenter;
+        or.textColor = [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1];
+        or.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:15];
+        [_noGroupsView addSubview:or];
+        
+        UIButton *create = [UIButton buttonWithType:UIButtonTypeCustom];
+        create.frame = CGRectMake(10, 204, 300, 44);
+        create.backgroundColor = [UIColor lightGrayColor];
+        [create setTitle:@"Create Your Own!" forState:UIControlStateNormal];
+        [create.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:18]];
+        [create addTarget:self action:@selector(createGroup) forControlEvents:UIControlEventTouchUpInside];
+        [_noGroupsView addSubview:create];
+    }
+    
+    return _noGroupsView;
+}
+
+- (UILabel *)noContent {
+    
+    if (!_noContent) {
+        
+        _noContent = [[UILabel alloc] initWithFrame:CGRectMake(10, 120, 300, 60)];
+        _noContent.text = @"Nothing to see here yet";
+        _noContent.numberOfLines = 0;
+        _noContent.textAlignment = NSTextAlignmentCenter;
+        _noContent.textColor = [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1];
+        _noContent.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:20];
+        [_noGroupsView addSubview:_noContent];
+
+    }
+    
+    return _noContent;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
-                                        init];
-    [refreshControl addTarget:self action:@selector(callRefresh) forControlEvents:UIControlEventValueChanged];
-    self.refreshControl = refreshControl;
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    onceToken = [def boolForKey:@"previewRight"];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -66,16 +134,67 @@
     
     _imageView.hidden = YES;
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
+    self.title = @"Beak";
     
-
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"profile"] style:UIBarButtonItemStylePlain target:self action:@selector(showProfile)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"side"] style:UIBarButtonItemStylePlain target:self action:@selector(openRight)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    [self callRefresh];
+    
+    [self.viewDeckController setPanningMode:IIViewDeckFullViewPanning];
+    
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    if (![def boolForKey:@"subscribedToGroups"]) {
+        
+        [self.view addSubview:[self noGroupsView]];
+        
+    }
+    else {
+        
+        [[BeaconManager sharedManager] getUserSubscribedGroups:^(NSArray *groups, NSError *error) {
+            
+            for (PFObject *sub in groups) {
+            
+                [[BeaconManager sharedManager] monitorBeaconsForGroup:sub[@"group"]];
+            }
+            
+            [self.tableView reloadData];
+        }];
+
+        
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
+                                            init];
+        [refreshControl addTarget:self action:@selector(callRefresh) forControlEvents:UIControlEventValueChanged];
+        self.refreshControl = refreshControl;
+        
+        [self callRefresh];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (!onceToken) {
+        
+        NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+        [def setBool:YES forKey:@"previewRight"];
+        [def synchronize];
+        
+        [self.viewDeckController openRightViewAnimated:YES completion:^(IIViewDeckController *controller, BOOL success) {
+            
+            [self performSelector:@selector(closeRight) withObject:nil afterDelay:0.5];
+            
+        }];
+    }
+}
+
+- (void)closeRight {
+    
+    [self.viewDeckController closeRightView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -112,30 +231,32 @@
 -(void)callRefresh
 {
     [self.refreshControl beginRefreshing];
+    
     [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
         self.takeMessages=messages;
         
+        _messages = messages;
+        
         //if there are no messages show create and manage button
-        if(messages.count==0)
-        {
-            UIButton *createGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-            [createGroupButton addTarget:self action:@selector(createGroup) forControlEvents:UIControlEventTouchUpInside];
-            [createGroupButton setTitle:@"Create a Group" forState:UIControlStateNormal];
-            createGroupButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
-            [self.view addSubview:createGroupButton];
+        if(messages.count==0) {
             
-            UIButton *manageGroupButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-            [manageGroupButton addTarget:self action:@selector(manageGroup) forControlEvents:UIControlEventTouchUpInside];
-            [manageGroupButton setTitle:@"Manage Group" forState:UIControlStateNormal];
-            manageGroupButton.frame = CGRectMake(80.0, 250.0, 160.0, 40.0);
-            [self.view addSubview:manageGroupButton];
-            
+            [self.view addSubview:[self noContent]];
+
         }
+        else {
+            
+            [_noGroupsView removeFromSuperview];
+            [self.tableView reloadData];
+        }
+<<<<<<< HEAD
         else
         {
             [self.tableView reloadData];
         }
         NSLog(@"%@", messages);
+=======
+        
+>>>>>>> 4cdb23ff7b1436a339b5c7601c2e95a32d1987a5
         [self.refreshControl endRefreshing];
     }];
 

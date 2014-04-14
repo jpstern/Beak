@@ -36,6 +36,8 @@
     if (!_imageThumb) {
         
         _imageThumb = [[UIImageView alloc] initWithFrame:CGRectZero];
+        _imageThumb.contentMode = UIViewContentModeScaleAspectFit;
+        [self.contentView addSubview:_imageThumb];
     }
     
     return _imageThumb;
@@ -46,7 +48,7 @@
     [super layoutSubviews];
     
     _message.frame = CGRectMake(0, 0, 320, self.contentView.frame.size.height);
-    _imageThumb.frame = CGRectMake(260, 10, 50, 50);
+    _imageThumb.frame = CGRectMake(85, 10, 150, 150);
 }
 
 - (void)awakeFromNib

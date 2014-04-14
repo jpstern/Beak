@@ -195,6 +195,8 @@ static NSString *kPhotoCell = @"PhotoCell";
            
             _messages = [objects mutableCopy];
             
+            [self fillArrays];
+            
             [_tableView reloadData];
             
         }];
@@ -204,17 +206,23 @@ static NSString *kPhotoCell = @"PhotoCell";
         
         _messages = [currentMessages mutableCopy];
         
+        [self fillArrays];
     }
     else {
         
         _messages = [[NSMutableArray alloc] init];
     }
     
+}
+
+- (void)fillArrays {
+    
     for (int i = 0; i < _messages.count; i ++) {
         
         [_textViews addObject:[NSNull null]];
         [_images addObject:[NSNull null]];
     }
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -235,7 +243,7 @@ static NSString *kPhotoCell = @"PhotoCell";
     }
     else if (obj[@"type"] && [obj[@"type"] isEqualToString:@"image"]) {
         
-        return 70;
+        return 170;
     }
     
     return 44;
@@ -280,10 +288,11 @@ static NSString *kPhotoCell = @"PhotoCell";
         }
         else {
             PFFile *theImage = message[@"imageFile"];
+            __block UIImageView *thumb = cell.imageThumb;
             [theImage getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                 
                 UIImage *image = [UIImage imageWithData:data];
-                cell.imageThumb.image = image;
+                thumb.image = image;
             }];
         }
         

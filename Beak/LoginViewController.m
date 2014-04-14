@@ -9,6 +9,8 @@
 #import "LoginViewController.h"
 #import "MyViewDeckViewController.h"
 
+#import "AppDelegate.h"
+
 @interface LoginViewController ()
 
 @end
@@ -30,6 +32,13 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    if ([PFUser currentUser] && // Check if a user is cached
+        [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) // Check if user is linked to Facebook
+    {
+        [self userLoggedIn];
+        
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -42,7 +51,7 @@
     [_fblogin setEnabled:NO];
     [PFFacebookUtils logInWithPermissions:@[@"email"] block:^(PFUser *user, NSError *error) {
         
-        if (error) {
+        if (error || !user) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Login error!" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
             [_fblogin setEnabled:YES];
@@ -52,13 +61,22 @@
             NSLog(@"Uh oh. The user cancelled the Facebook login.");
             
         } else {
-            UIViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"myViewDeckViewController"];
-            self.view.window.rootViewController = controller;
+            
             NSLog(@"User logged in through Facebook!");
+            
+            [self userLoggedIn];
         }
         
     }];
 
+}
+
+- (void)userLoggedIn {
+    
+    AppDelegate *del = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    UIViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"myViewDeckViewController"];
+    del.window.rootViewController = controller;
 }
 
 //
