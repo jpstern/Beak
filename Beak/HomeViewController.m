@@ -227,6 +227,7 @@
 
 -(void)callRefresh
 {
+    //UIView *refreshView =[UIView alloc];
     [self.refreshControl beginRefreshing];
     
     [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
@@ -235,7 +236,7 @@
         
         //if there are no messages show create and manage button
         if(messages.count==0) {
-            
+
             [self.view addSubview:[self noContent]];
 
         }
@@ -243,10 +244,11 @@
             
             [_noGroupsView removeFromSuperview];
             [self.tableView reloadData];
+            //[refreshView dealloc];
         }
         [self.refreshControl endRefreshing];
     }];
-
+    //return refreshView;
 }
 
 //
@@ -265,12 +267,14 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSLog(@"Messages count %ld",self.messages.count);
+
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return _messages.count;
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -284,6 +288,14 @@
         
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
+    if(_messages.count>0)
+    {
+        PFObject *temp =self.messages[indexPath.row];
+        [temp[@"message"] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error){
+            cell.textLabel.text =object[@"body"];
+        }];
+    
+    }
     
     
     
@@ -293,6 +305,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    return 44;
 }
 
 
