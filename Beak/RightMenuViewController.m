@@ -61,11 +61,11 @@
     
     if (indexPath.row == 0) {
         
-        cell.title.text = @"Create Group";
+        cell.title.text = @"Join or Manage Groups";
     }
     else if (indexPath.row == 1) {
         
-        cell.title.text = @"Join or Manage Groups";
+        cell.title.text = @"Create Group";
     }
 //    else {
 //        
@@ -77,14 +77,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row == 0) {
+    if (indexPath.row == 1) {
         
         UIViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"createViewController"];
         
         [self.viewDeckController rightViewPushViewControllerOverCenterController:controller];
     
     }
-    else if (indexPath.row == 1) {
+    else if (indexPath.row == 0) {
         
         UIViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"manageViewController"];
         
