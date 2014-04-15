@@ -211,6 +211,7 @@ static NSString *kPhotoCell = @"PhotoCell";
     else {
         
         _messages = [[NSMutableArray alloc] init];
+
     }
     
 }

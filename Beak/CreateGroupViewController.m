@@ -58,6 +58,8 @@
     headerView.backgroundColor = [UIColor whiteColor];
     _enterGroupName = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, 300, 40)];
 //    _enterGroupName.borderStyle = UITextBorderStyleLine;
+    _enterGroupName.returnKeyType = UIReturnKeyDone;
+    [_enterGroupName addTarget:_enterGroupName action:@selector(resignFirstResponder) forControlEvents:UIControlEventEditingDidEndOnExit];
     _enterGroupName.placeholder = @"Enter group name here";
     [headerView addSubview:self.enterGroupName];
     
@@ -81,7 +83,7 @@
         
         if (![set isEqual:set1]) {
             
-            _usedBeaconIds = [NSSet setWithArray:[parseBeacons valueForKey:@"major"]];
+            _usedBeaconIds = [NSSet setWithArray:[parseBeacons valueForKey:@"minor"]];
             _beaconsList = estBeacons;
             [_tableView reloadData];
             
@@ -89,6 +91,13 @@
         
     }];
 
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    [[BeaconManager sharedManager] setCurrentMessages:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -186,7 +195,7 @@
         
         BOOL used = NO;
         
-        if ([_usedBeaconIds containsObject:beacon.major]) {
+        if ([_usedBeaconIds containsObject:beacon.minor]) {
             
             used = YES;
             
@@ -212,7 +221,7 @@
         
         cell.accessoryView = nil;
         
-        cell.textLabel.text = [NSString stringWithFormat:@"Beacon %ld %@", indexPath.row + 1, used ? @"- Already Used" : @""];
+        cell.textLabel.text = [NSString stringWithFormat:@"Beacon %d %@", (indexPath.row + 1), used ? @"- Already Used" : @""];
 
         NSNumber *major = beacon.major;
         NSNumber *minor = beacon.minor;

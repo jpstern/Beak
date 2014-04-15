@@ -267,10 +267,10 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     
     NSArray *estBeacons = beacons;
     
-    NSArray *majorValues = [beacons valueForKey:@"major"];
+    NSArray *minorValues = [beacons valueForKey:@"minor"];
     
     PFQuery *query = [PFQuery queryWithClassName:@"Beacon"];
-    [query whereKey:@"major" containedIn:majorValues];
+    [query whereKey:@"minor" containedIn:minorValues];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
     
         nearbyBlock(estBeacons, objects, nil);
@@ -357,11 +357,11 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     
     [_delegate didEnterRegion];
     
-    NSNumber *major = region.major;
+//    NSNumber *major = region.major;
     NSNumber *minor = region.minor;
     NSString *uuid = [region.proximityUUID UUIDString];
     
-    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"proximityUUID == %@ AND major == %@ AND minor == %@", uuid, major, minor]];
+    PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"proximityUUID == %@ AND minor == %@", uuid, minor]];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
@@ -414,7 +414,7 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
 - (void)getWelcomeMessageForGroup:(PFObject *)groupObj
                     andCompletion:(void (^)(PFObject *message, NSError *))block {
     
-    PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"SELF.group == %@", groupObj]];
+    PFQuery *query = [PFQuery queryWithClassName:@"Message" predicate:[NSPredicate predicateWithFormat:@"SELF.group == %@ AND SELF.isJoinMessage == YES", groupObj]];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
        

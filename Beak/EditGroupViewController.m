@@ -38,7 +38,7 @@
     
     [_group deleteInBackground];
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void)saveGroup {
@@ -46,7 +46,6 @@
     [activeField resignFirstResponder];
     
     if ([[BeaconManager sharedManager] currentMessages][@"joinMessage"]) {
-//    if (![joinMessage.text isEqualToString:@"(Optional) Add a message for when a user subscribes"]) {
     
         _group[@"hasJoinMessage"] = @(YES);
         
@@ -58,6 +57,7 @@
         [mess saveInBackground];
         
     }
+
     
     NSDictionary *currentMessages = [[[BeaconManager sharedManager] currentMessages] copy];
     
@@ -75,6 +75,12 @@
             NSArray *messages = currentMessages[mapId];
             
             beacon[@"group"] = _group;
+            
+            if ([beacon[@"isUserDevice"] boolValue]) {
+                
+                [[[BeaconManager sharedManager] beaconManager] startAdvertisingWithProximityUUID:ESTIMOTE_PROXIMITY_UUID major:[beacon[@"major"] intValue] minor:[beacon[@"minor"] intValue] identifier:@"device"];
+            }
+            
             [beacon saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                                 
                 for (PFObject *message in messages) {
@@ -97,6 +103,8 @@
 {
     [super viewDidLoad];
     
+    [[BeaconManager sharedManager] setCurrentMessages:[[NSMutableDictionary alloc] init]];
+    
     NSArray *arr = [[BeaconManager sharedManager] estBeacons];
     
     if (arr) {
@@ -106,7 +114,7 @@
         if (_useDevice) {
             
             PFObject *beacon = [[PFObject alloc] initWithClassName:@"Beacon"];
-            beacon[@"proximityUUID"] = [ESTIMOTE_IOSBEACON_PROXIMITY_UUID UUIDString];
+            beacon[@"proximityUUID"] = [ESTIMOTE_PROXIMITY_UUID UUIDString];
             beacon[@"major"] = @(89898);
             beacon[@"minor"] = @(10101);
             beacon[@"isUserDevice"] = @(YES);
@@ -313,6 +321,7 @@
                 
                 cell.count.text = [NSString stringWithFormat:@"(%@)", beacon[@"messageCount"] ? beacon[@"messageCount"] : @(0)];
                 
+                cell.textLabel.hidden = YES;
                 cell.beaconName.text = [[UIDevice currentDevice] name];
                 cell.detailTextLabel.text = @"iOS Device";
             }
@@ -351,6 +360,7 @@
         cell.beaconName.hidden = YES;
         cell.message.hidden = YES;
         cell.count.hidden = YES;
+        cell.textLabel.hidden = NO;
         cell.textLabel.text = @"Delete Group";
         cell.textLabel.textColor = [UIColor redColor];
         
@@ -373,6 +383,11 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         PFObject *beacon = _beacons[indexPath.row];
+        
+        if ([beacon[@"isUserDevice"] boolValue]) {
+            
+            [[[BeaconManager sharedManager] beaconManager] stopAdvertising];
+        }
         
         if (beacon.objectId)
             [beacon deleteInBackground];

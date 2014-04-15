@@ -107,15 +107,17 @@
 
 - (UILabel *)noContent {
     
+    [_noContent removeFromSuperview];
+    
     if (!_noContent) {
-        
+
         _noContent = [[UILabel alloc] initWithFrame:CGRectMake(10, 120, 300, 60)];
         _noContent.text = @"Nothing to see here!";
         _noContent.numberOfLines = 0;
         _noContent.textAlignment = NSTextAlignmentCenter;
         _noContent.textColor = [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1];
         _noContent.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:20];
-        [_noGroupsView addSubview:_noContent];
+//        [_noGroupsView addSubview:_noContent];
 
     }
     
@@ -125,9 +127,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-    onceToken = [def boolForKey:@"previewRight"];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -147,9 +146,11 @@
     
     [super viewWillAppear:animated];
     
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    onceToken = [def boolForKey:@"previewRight"];
+    
     [self.viewDeckController setPanningMode:IIViewDeckFullViewPanning];
     
-    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
     if (![def boolForKey:@"subscribedToGroups"]) {
         
         [self.view addSubview:[self noGroupsView]];
@@ -174,15 +175,15 @@
             
             [self.tableView reloadData];
         }];
-
         
         UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
                                             init];
         [refreshControl addTarget:self action:@selector(callRefresh) forControlEvents:UIControlEventValueChanged];
         self.refreshControl = refreshControl;
-        
+    
         [self callRefresh];
     }
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -279,6 +280,7 @@
         //if there are no messages show create and manage button
         if(messages.count==0) {
 
+            [_noGroupsView removeFromSuperview];
             [self.view addSubview:[self noContent]];
 
         }
@@ -298,7 +300,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    view.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
+    view.backgroundColor = [[UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1] colorWithAlphaComponent:0.6];
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 320, 44)];
     lab.textColor = [UIColor darkTextColor];
     lab.font = [UIFont fontWithName:@"HelveticaNeue" size:18];
@@ -349,12 +351,12 @@
     
     static NSString *CellIdentifier = @"CellID";
     
-    HomeCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    HomeCell *cell;// = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    if (!cell) {
-        
-        cell = [[HomeCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
+//    if (!cell) {
+    
+        cell = [[HomeCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
+//    }
     
     PFObject *userMessage = self.messages[indexPath.section][indexPath.row];
     
