@@ -218,6 +218,8 @@
 - (void)didEnterRegion {
     
     NSLog(@"entered region");
+//    [self.tableView setContentOffset:CGPointMake(0, -100) animated:YES];
+    [self.refreshControl beginRefreshing];
 }
 
 - (void)didReceiveEnteredRegionMessage:(PFObject *)message {
@@ -248,21 +250,22 @@
     
     for (PFObject *userMessage in _messages) {
         
-        if (groups[[userMessage[@"group"] objectId]]) {
+        NSString *key = userMessage[@"groupObjectId"];
+        
+        if (groups[key]) {
             
-            NSMutableArray *arr = groups[[userMessage[@"group"] objectId]];
+            NSMutableArray *arr = groups[key];
             
             [arr addObject:userMessage];
         }
         else {
             
             NSMutableArray *arr = [[NSMutableArray alloc] initWithObjects:userMessage, nil];
-            groups[[userMessage[@"group"] objectId]] = arr;
+            groups[key] = arr;
         }
     }
     
     _messages = [groups allValues];
-    
     
 }
 
@@ -308,10 +311,10 @@
     
     PFObject *userMessage = _messages[section][0];
     
-    [userMessage[@"group"] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-       
-        lab.text = [NSString stringWithFormat:@"Messages from %@", object[@"name"]];
-    }];
+//    [userMessage[@"group"] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+    
+    lab.text = [NSString stringWithFormat:@"Messages from %@", userMessage[@"groupName"]];
+//    }];
     
     return view;
 }
@@ -325,9 +328,11 @@
     
     PFObject *message = _messages[indexPath.section][indexPath.row];
     
-    if ([message[@"type"] isEqualToString:@"text"]) {
+    if ([message[@"messageType"] isEqualToString:@"text"]) {
         
-        return _textSizeMap[message.objectId] ? MAX(44, [_textSizeMap[message.objectId] floatValue]+ 5) : 44;
+        CGSize size = [message[@"messageBody"] sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:15] constrainedToSize:CGSizeMake(300, 9999)];
+        
+        return MAX(44, size.height + 4);
     }
     
     return 320;
@@ -358,50 +363,53 @@
         cell = [[HomeCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
 //    }
     
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     PFObject *userMessage = self.messages[indexPath.section][indexPath.row];
     
-    if ([userMessage[@"type"] isEqualToString:@"text"]) {
+    if ([userMessage[@"messageType"] isEqualToString:@"text"]) {
         
-        [userMessage[@"message"] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error){
-            
-            NSString *text = object[@"body"];
+        cell.body.text = userMessage[@"messageBody"];
+        
+//        [userMessage[@"message"] fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error){
 //            
-            CGSize size = [text sizeWithFont:cell.body.font constrainedToSize:CGSizeMake(300, 9999)];
-//            CGRect rect = [text boundingRectWithSize:CGSizeMake(300, 999) options:NSStringDrawingUsesDeviceMetrics attributes:@{NSFontAttributeName: cell.body.font} context:nil];
-            
-            NSNumber *curHeight = _textSizeMap[userMessage.objectId];
-            
-            if (![curHeight isEqual:@(size.height)]) {
-                _textSizeMap[userMessage.objectId] = @(size.height);
-                [tableView reloadData];
-            }
-            
-            CGRect frame = cell.body.frame;
-            frame.size.height = MAX(44, size.height);
-            cell.body.frame = frame;
-            
-            cell.body.text = object[@"body"];
-            
-//            PFObject *group = userMessage[@"group"];
-//            [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-//                
-//                cell.title.text = [NSString stringWithFormat:@"%@ has something for you!", object[@"name"]];
-//            }];
-            
-            
-        }];
+//            NSString *text = object[@"body"];
+////            
+//            CGSize size = [text sizeWithFont:cell.body.font constrainedToSize:CGSizeMake(300, 9999)];
+////            CGRect rect = [text boundingRectWithSize:CGSizeMake(300, 999) options:NSStringDrawingUsesDeviceMetrics attributes:@{NSFontAttributeName: cell.body.font} context:nil];
+//            
+//            NSNumber *curHeight = _textSizeMap[userMessage.objectId];
+//            
+//            if (![curHeight isEqual:@(size.height)]) {
+//                _textSizeMap[userMessage.objectId] = @(size.height);
+//                [tableView reloadData];
+//            }
+//            
+//            CGRect frame = cell.body.frame;
+//            frame.size.height = MAX(44, size.height);
+//            cell.body.frame = frame;
+//            
+//            cell.body.text = object[@"body"];
+//            
+////            PFObject *group = userMessage[@"group"];
+////            [group fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+////                
+////                cell.title.text = [NSString stringWithFormat:@"%@ has something for you!", object[@"name"]];
+////            }];
+//            
+//            
+//        }];
     }
     else {
         
-        [userMessage[@"message"] fetchIfNeededInBackgroundWithBlock:^(PFObject *message, NSError *error){
-            
-            PFFile *theImage = message[@"imageFile"];
+//        [userMessage[@"message"] fetchIfNeededInBackgroundWithBlock:^(PFObject *message, NSError *error){
+        
+            PFFile *theImage = userMessage[@"messageImageFile"];
             [theImage getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                 
                 UIImage *image = [UIImage imageWithData:data];
                 cell.messageImage.image = image;
             }];
-        }];
+//        }];
 
         
     }

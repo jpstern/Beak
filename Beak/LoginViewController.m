@@ -49,6 +49,7 @@
 
 - (IBAction)loginButtonTouchHandler:(id)sender  {
     [_fblogin setEnabled:NO];
+    
     [PFFacebookUtils logInWithPermissions:@[@"email"] block:^(PFUser *user, NSError *error) {
         
         if (error || !user) {

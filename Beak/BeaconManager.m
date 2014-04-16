@@ -184,6 +184,12 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     
 }
 
+- (void)monitorThatBitchSoon:(ESTBeaconRegion *)region {
+    
+    [self.beaconManager requestStateForRegion:region];
+    [self.beaconManager startMonitoringForRegion:region];
+}
+
 - (void)monitorBeaconsForGroup:(PFObject *)groupObj {
 
     PFQuery *query = [PFQuery queryWithClassName:@"Beacon" predicate:[NSPredicate predicateWithFormat:@"SELF.group == %@", groupObj]];
@@ -203,10 +209,9 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
                     
                     ESTBeaconRegion* region = [[ESTBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:uuid]
                                                                                        major:major.intValue minor:minor.intValue
-                                                                                  identifier:groupObj.objectId];
-                    [self.beaconManager startMonitoringForRegion:region];
-                    [self.beaconManager requestStateForRegion:region];
-
+                                                                                  identifier:beacon.objectId];
+                
+                    [self performSelector:@selector(monitorThatBitchSoon:) withObject:region afterDelay:2];
                     NSMutableArray *arr = _monitoredRegions[groupObj.objectId];
                     
                     if (arr) {
@@ -373,6 +378,8 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
+                NSLog(@"%@", objects);
+                
                 if (error) {
                     
                     NSLog(@"%@", error);
@@ -380,10 +387,15 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
                 else if (objects && objects.count > 0) {
                     
                     for (PFObject *message in objects) {
-                     
-                        [_delegate didReceiveEnteredRegionMessage:message];
                         
-                        [self addMessageToUserMessages:message];
+                        __weak id weakTarget = _delegate;
+                     
+                        [self addMessageToUserMessages:message completion:^{
+                            
+                            [weakTarget didReceiveEnteredRegionMessage:message];
+                            
+                        }];
+                        
                     }
                 }
                 
@@ -399,16 +411,38 @@ typedef void (^NearbyBeaconsBlock)(NSArray *estBeacons, NSArray *parseBeacons, N
     
 }
 
-- (void)addMessageToUserMessages:(PFObject *)message {
+- (void)addMessageToUserMessages:(PFObject *)message completion:(void(^)())done {
     
-    PFObject *userMessage = [PFObject objectWithClassName:@"UserMessage"];
+//    userMessage[@"message"] = message;
+//    userMessage[@"type"] = message[@"type"];
+//    userMessage[@"group"] = message[@"group"];
     
-    userMessage[@"user"] = [PFUser currentUser];
-    userMessage[@"message"] = message;
-    userMessage[@"type"] = message[@"type"];
-    userMessage[@"group"] = message[@"group"];
-    
-    [userMessage saveInBackground];
+    [message fetchIfNeededInBackgroundWithBlock:^(PFObject *mess, NSError *error) {
+       
+        PFObject *group = mess[@"group"];
+        
+        [group fetchIfNeededInBackgroundWithBlock:^(PFObject *gro, NSError *error) {
+            
+            PFObject *userMessage = [PFObject objectWithClassName:@"UserMessage"];
+            
+            userMessage[@"message"] = mess;
+            userMessage[@"group"] = gro;
+            userMessage[@"user"] = [PFUser currentUser];
+            userMessage[@"groupObjectId"] = gro.objectId;
+            userMessage[@"groupName"] = gro[@"name"];
+            userMessage[@"messageObjectId"] = mess.objectId;
+            userMessage[@"messageType"] = mess[@"type"];
+            userMessage[@"messageBody"] = mess[@"body"] ? mess[@"body"] : [NSNull null];
+            userMessage[@"messageIsJoinMessage"] = mess[@"isJoinMessage"] ? @([mess[@"isJoinMessage"] boolValue]) : @(NO);
+            userMessage[@"messageImageFile"] = mess[@"imageFile"] ? mess[@"imageFile"] : [NSNull null];
+            
+            [userMessage saveInBackground];
+            
+            done();
+            
+        }];
+    }];
+
 }
 
 - (void)getWelcomeMessageForGroup:(PFObject *)groupObj

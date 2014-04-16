@@ -63,6 +63,9 @@
     
     [super layoutSubviews];
     
+    CGSize size = [_body.text sizeWithFont:_body.font constrainedToSize:CGSizeMake(300, 9999)];
+    _body.frame = CGRectMake(0, 0, 300, size.height);
+    _body.center = CGPointMake(self.contentView.frame.size.width / 2, self.contentView.frame.size.height / 2);
     
 }
 
