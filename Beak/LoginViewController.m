@@ -133,7 +133,8 @@
     [self.view addSubview:_joinGroup];
     
     if (animated) {
-        [UIView animateWithDuration:1 animations:^{
+        
+        [UIView animateWithDuration:1.25 animations:^{
             
             _welcome.alpha = 1;
             
