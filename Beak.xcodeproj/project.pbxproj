@@ -573,7 +573,7 @@
 					"$(PROJECT_DIR)/Beak/EstimoteSDK",
 				);
 				PRODUCT_NAME = Beak;
-				PROVISIONING_PROFILE = "F8F108E5-597E-4950-8B89-3B96977B3FB7";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -584,8 +584,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Josh Stern (5CTEXGPQ66)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Josh Stern (5CTEXGPQ66)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Beak/Beak-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -602,7 +602,7 @@
 					"$(PROJECT_DIR)/Beak/EstimoteSDK",
 				);
 				PRODUCT_NAME = Beak;
-				PROVISIONING_PROFILE = "F8F108E5-597E-4950-8B89-3B96977B3FB7";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
