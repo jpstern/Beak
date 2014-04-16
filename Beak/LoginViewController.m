@@ -93,6 +93,7 @@
     [_whatBeacons setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [_whatBeacons.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:13]];
     [_whatBeacons setTitle:@"What is an iBeacon?" forState:UIControlStateNormal];
+    [_whatBeacons addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_whatBeacons];
     
     _line = [[UIView alloc] initWithFrame:CGRectMake(20, 245, 280, 1)];
@@ -176,6 +177,102 @@
     [super viewWillAppear:animated];
     
     [self showIntro:YES];
+}
+
+- (void)remove:(UIControl*)sender {
+    
+    [UIView animateWithDuration:0.6 animations:^{
+        
+        sender.alpha = 0;
+        
+    } completion:^(BOOL finished) {
+    
+        [sender removeFromSuperview];
+    }];
+    
+}
+
+- (void)showInfo {
+    
+    UIView *view = [self tutorialView];
+    [self.view addSubview:view];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+    
+        view.alpha = 1;
+    }];
+
+}
+
+- (UIControl *)tutorialView {
+    
+    UIControl *view = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
+    view.alpha = 0;
+    view.backgroundColor = [UIColor whiteColor];
+    [view addTarget:self action:@selector(remove:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIImageView *image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"beacons"]];
+    image.center = CGPointMake(160, 90);
+    [view addSubview:image];
+    
+    UILabel *desc = [[UILabel alloc] initWithFrame:CGRectMake(20, 170, 280, 40)];
+    desc.numberOfLines = 0;
+    desc.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
+    desc.textColor = [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1];
+    desc.text = @"An iBeacon is a small device (above) that emits an ultra low power bluetooth signal.";
+    desc.textAlignment = NSTextAlignmentCenter;
+    [view addSubview:desc];
+    
+    UILabel *so = [[UILabel alloc] initWithFrame:CGRectMake(20, 225, 280, 40)];
+    so.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:20];
+    so.textColor = [UIColor colorWithRed:70/255.0 green:70/255.0 blue:70/255.0 alpha:1];
+    so.text = @"So what?";
+    so.textAlignment = NSTextAlignmentCenter;
+    [view addSubview:so];
+    
+    UILabel *beak = [[UILabel alloc] initWithFrame:CGRectMake(20, 270, 280, 90)];
+    beak.numberOfLines = 0;
+    beak.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
+    beak.textColor = [UIColor colorWithRed:70/255.0 green:70/255.0 blue:70/255.0 alpha:1];
+    beak.textAlignment = NSTextAlignmentCenter;
+    NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:@"Here is where Beak comes in.  The app is designed to detect these bluetooth signals and deliver specific content to customers based on their location in your store!"];
+    [string addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:255/255.0 green:135/255.0 blue:60/255.0 alpha:1] range:NSMakeRange(14, 4)];
+    [string addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Thin" size:20] range:NSMakeRange(14, 4)];
+    beak.attributedText = string;
+    [view addSubview:beak];
+    
+    UILabel *cool = [[UILabel alloc] initWithFrame:CGRectMake(20, 370, 280, 40)];
+    cool.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:20];
+    cool.textColor = [UIColor colorWithRed:70/255.0 green:70/255.0 blue:70/255.0 alpha:1];
+    cool.text = @"We know, it's awesome";
+    cool.textAlignment = NSTextAlignmentCenter;
+    [view addSubview:cool];
+    
+    UILabel *started = [[UILabel alloc] initWithFrame:CGRectMake(20, 420, 280, 40)];
+    started.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:15];
+    started.textColor = [UIColor blueColor];
+    started.text = @"Get Started";
+    started.textAlignment = NSTextAlignmentCenter;
+    [view addSubview:started];
+    
+    
+    UIButton *estimote = [UIButton buttonWithType:UIButtonTypeCustom];
+    [estimote addTarget:self action:@selector(goToEstimote) forControlEvents:UIControlEventTouchUpInside];
+    estimote.frame = CGRectMake(10, self.view.frame.size.height - 60, 300, 50);
+    NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:@"Need Beacons? www.estimote.com"];
+    [attr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue" size:13] range:NSMakeRange(0, attr.length)];
+    [attr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1] range:NSMakeRange(0, 14)];
+    [attr addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor] range:NSMakeRange(14, attr.length - 14)];
+    [estimote setAttributedTitle:attr forState:UIControlStateNormal];
+    [view addSubview:estimote];
+    
+    return view;
+}
+
+- (void)goToEstimote {
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.estimote.com"]];
+    
 }
 
 - (void)goBack {
