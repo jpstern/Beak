@@ -17,7 +17,6 @@
 		808604B818CD309F00ABA33B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 808604B618CD309F00ABA33B /* InfoPlist.strings */; };
 		808604BA18CD309F00ABA33B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604B918CD309F00ABA33B /* main.m */; };
 		808604BE18CD309F00ABA33B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604BD18CD309F00ABA33B /* AppDelegate.m */; };
-		808604C118CD309F00ABA33B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 808604BF18CD309F00ABA33B /* Main.storyboard */; };
 		808604C418CD309F00ABA33B /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604C318CD309F00ABA33B /* HomeViewController.m */; };
 		808604C618CD309F00ABA33B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 808604C518CD309F00ABA33B /* Images.xcassets */; };
 		808604CD18CD309F00ABA33B /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808604CC18CD309F00ABA33B /* XCTest.framework */; };
@@ -26,6 +25,7 @@
 		808604D718CD309F00ABA33B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 808604D518CD309F00ABA33B /* InfoPlist.strings */; };
 		808604D918CD309F00ABA33B /* BeakTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604D818CD309F00ABA33B /* BeakTests.m */; };
 		808604E418CD31A500ABA33B /* BeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 808604E318CD31A500ABA33B /* BeaconManager.m */; };
+		808AA65F18FECE0E00D5C511 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 808AA65E18FECE0E00D5C511 /* Main.storyboard */; };
 		80C3E94918D926D30096D787 /* ManageGroupsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C3E94818D926D30096D787 /* ManageGroupsViewController.m */; };
 		80CE592F18F3666400DE5EB5 /* AddMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CE592E18F3666400DE5EB5 /* AddMessageViewController.m */; };
 		80CE593218F3786D00DE5EB5 /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CE593118F3786D00DE5EB5 /* MessageCell.m */; };
@@ -71,7 +71,6 @@
 		808604BB18CD309F00ABA33B /* Beak-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Beak-Prefix.pch"; sourceTree = "<group>"; };
 		808604BC18CD309F00ABA33B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		808604BD18CD309F00ABA33B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		808604C018CD309F00ABA33B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		808604C218CD309F00ABA33B /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		808604C318CD309F00ABA33B /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		808604C518CD309F00ABA33B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -82,6 +81,7 @@
 		808604D818CD309F00ABA33B /* BeakTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeakTests.m; sourceTree = "<group>"; };
 		808604E218CD31A500ABA33B /* BeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconManager.h; sourceTree = "<group>"; };
 		808604E318CD31A500ABA33B /* BeaconManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconManager.m; sourceTree = "<group>"; };
+		808AA65E18FECE0E00D5C511 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		80C3E94718D926D30096D787 /* ManageGroupsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageGroupsViewController.h; sourceTree = "<group>"; };
 		80C3E94818D926D30096D787 /* ManageGroupsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageGroupsViewController.m; sourceTree = "<group>"; };
 		80CE592D18F3666400DE5EB5 /* AddMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddMessageViewController.h; sourceTree = "<group>"; };
@@ -185,9 +185,9 @@
 			children = (
 				80EA837718EE151800981338 /* EstimoteSDK */,
 				80EA82CF18DA20CA00981338 /* lion-03.jpg */,
+				808AA65E18FECE0E00D5C511 /* Main.storyboard */,
 				808604BC18CD309F00ABA33B /* AppDelegate.h */,
 				808604BD18CD309F00ABA33B /* AppDelegate.m */,
-				808604BF18CD309F00ABA33B /* Main.storyboard */,
 				8E8E417E18FB0F06002D4064 /* LoginViewController.h */,
 				8E8E417F18FB0F06002D4064 /* LoginViewController.m */,
 				B9E4B48D18D7762D00845272 /* CreateGroupViewController.h */,
@@ -359,7 +359,7 @@
 				80EA82D018DA20CA00981338 /* lion-03.jpg in Resources */,
 				808604C618CD309F00ABA33B /* Images.xcassets in Resources */,
 				808604B818CD309F00ABA33B /* InfoPlist.strings in Resources */,
-				808604C118CD309F00ABA33B /* Main.storyboard in Resources */,
+				808AA65F18FECE0E00D5C511 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,14 +456,6 @@
 				808604B718CD309F00ABA33B /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		808604BF18CD309F00ABA33B /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				808604C018CD309F00ABA33B /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 		808604D518CD309F00ABA33B /* InfoPlist.strings */ = {
