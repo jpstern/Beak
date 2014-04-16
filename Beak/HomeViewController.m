@@ -132,9 +132,10 @@
     
     [[BeaconManager sharedManager] setDelegate:self];
     
+    onceToken = YES;
     _imageView.hidden = YES;
     
-    self.title = @"Beak";
+    self.title = @"Feed";
     
     _textSizeMap = [[NSMutableDictionary alloc] init];
     
@@ -147,41 +148,62 @@
     [super viewWillAppear:animated];
     
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-    onceToken = [def boolForKey:@"previewRight"];
     
-    [self.viewDeckController setPanningMode:IIViewDeckFullViewPanning];
-    
-    if (![def boolForKey:@"subscribedToGroups"]) {
+    if ([def objectForKey:@"hasBeacons"]) {
+        //tapped has beacons
         
-        [self.view addSubview:[self noGroupsView]];
+        [self createGroup];
+        
+        [def removeObjectForKey:@"joinGroup"];
+        [def removeObjectForKey:@"hasBeacons"];
+    }
+    else if ([def objectForKey:@"joinGroup"]) {
+        //tapped join group
+        
+        [self manageGroup];
+        
+        [def removeObjectForKey:@"joinGroup"];
+        [def removeObjectForKey:@"hasBeacons"];
         
     }
     else {
         
-        [[BeaconManager sharedManager] getUserSubscribedGroups:^(NSArray *groups, NSError *error) {
-            
-            if (groups.count == 0) {
-                
-                [def setBool:NO forKey:@"subscribedToGroups"];
-                
-                [_noContent removeFromSuperview];
-                [self.view addSubview:[self noGroupsView]];
-            }
-            
-            for (PFObject *sub in groups) {
-            
-                [[BeaconManager sharedManager] monitorBeaconsForGroup:sub[@"group"]];
-            }
-            
-            [self.tableView reloadData];
-        }];
+        onceToken = [def boolForKey:@"previewRight"];
         
-        UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
-                                            init];
-        [refreshControl addTarget:self action:@selector(callRefresh) forControlEvents:UIControlEventValueChanged];
-        self.refreshControl = refreshControl;
-    
-        [self callRefresh];
+        [self.viewDeckController setPanningMode:IIViewDeckFullViewPanning];
+        
+        if (![def boolForKey:@"subscribedToGroups"]) {
+            
+            [self.view addSubview:[self noGroupsView]];
+            
+        }
+        else {
+            
+            [[BeaconManager sharedManager] getUserSubscribedGroups:^(NSArray *groups, NSError *error) {
+                
+                if (groups.count == 0) {
+                    
+                    [def setBool:NO forKey:@"subscribedToGroups"];
+                    
+                    [_noContent removeFromSuperview];
+                    [self.view addSubview:[self noGroupsView]];
+                }
+                
+                for (PFObject *sub in groups) {
+                    
+                    [[BeaconManager sharedManager] monitorBeaconsForGroup:sub[@"group"]];
+                }
+                
+                [self.tableView reloadData];
+            }];
+            
+            UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
+                                                init];
+            [refreshControl addTarget:self action:@selector(callRefresh) forControlEvents:UIControlEventValueChanged];
+            self.refreshControl = refreshControl;
+            
+            [self callRefresh];
+        }
     }
     
 }
@@ -269,14 +291,17 @@
     
 }
 
--(void)callRefresh
-{
-    //UIView *refreshView =[UIView alloc];
+-(void)callRefresh {
+
     [self.refreshControl beginRefreshing];
     
     [[BeaconManager sharedManager] getExistingMessagesForUser:^(NSArray *messages, NSError *error) {
         
-        _messages = messages;
+        _messages = [messages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+           
+            return [[obj1 createdAt] compare:[obj2 createdAt]];
+            
+        }];
         
         [self processMessages];
         
@@ -295,8 +320,8 @@
         
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
+        
     }];
-    //return refreshView;
 }
 
 

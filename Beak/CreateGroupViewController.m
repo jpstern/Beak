@@ -44,6 +44,7 @@
 {
     [super viewDidLoad];
     
+    
 //    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"CellID"];
     
 //    UILabel *beaconTableText=[[UILabel alloc]initWithFrame:CGRectMake(20, 160, 280, 20)];
